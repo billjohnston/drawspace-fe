@@ -1,17 +1,26 @@
 import { FunctionComponent } from 'react'
-import Box from '@material-ui/core/Box'
+import DrawingCanvas from 'components/DrawingCanvas'
+import { makeStyles } from '@material-ui/core/styles'
+import { DrawCanvasProvider } from 'logic/useDrawCanvas'
+import DrawSidebar from 'components/DrawSidebar'
+
+const useStyles = makeStyles({
+    pageWrapper: {
+        display: 'flex',
+        flex: 1,
+    },
+    canvasArea: {},
+})
 
 const PageDraw: FunctionComponent = () => {
+    const classes = useStyles()
     return (
-        <Box
-            display="flex"
-            flex={1}
-            flexDirection="column"
-            alignItems="center"
-            justifyContent="center"
-        >
-            DRAW
-        </Box>
+        <div className={classes.pageWrapper}>
+            <DrawCanvasProvider>
+                <DrawSidebar />
+                <DrawingCanvas />
+            </DrawCanvasProvider>
+        </div>
     )
 }
 
