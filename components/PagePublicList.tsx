@@ -8,10 +8,6 @@ const PagePublicList: FunctionComponent = () => {
         <>
             <Head>
                 <title>New Drawings | {appName}</title>
-                <meta
-                    name="viewport"
-                    content="initial-scale=1.0, width=device-width"
-                />
             </Head>
             <Box
                 display="flex"

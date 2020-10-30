@@ -1,4 +1,4 @@
-import { FunctionComponent, MouseEvent } from 'react'
+import { FunctionComponent } from 'react'
 import { useDrawCanvasState, useDrawCanvasDispatch } from 'logic/useDrawCanvas'
 import Button from '@material-ui/core/Button'
 import UndoIcon from '@material-ui/icons/Undo'
@@ -16,17 +16,13 @@ const useStyles = makeStyles({
 
 const ControlUndo: FunctionComponent = () => {
     const classes = useStyles()
-    // const { activeBrush } = useDrawCanvasState()
+    const { canUndo, canRedo } = useDrawCanvasState()
     const { undo, redo } = useDrawCanvasDispatch()
-
-    // const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
-    //     undo()
-    // }
-
     return (
         <div className={classes.brushControlWrapper}>
             <Button
                 variant="outlined"
+                disabled={!canUndo}
                 startIcon={<UndoIcon />}
                 onClick={undo}
             >
@@ -34,6 +30,7 @@ const ControlUndo: FunctionComponent = () => {
             </Button>
             <Button
                 variant="outlined"
+                disabled={!canRedo}
                 startIcon={<RedoIcon />}
                 onClick={redo}
             >

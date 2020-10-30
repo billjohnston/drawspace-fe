@@ -34,12 +34,8 @@ const copyToCanvas = (
         tmpContext.canvas,
         0,
         0,
-        canvasContext.canvas.width * devicePixelRatio,
-        canvasContext.canvas.height * devicePixelRatio,
-        0,
-        0,
-        canvasContext.canvas.width,
-        canvasContext.canvas.height
+        canvasContext.canvas.width / devicePixelRatio,
+        canvasContext.canvas.height / devicePixelRatio
     )
 }
 

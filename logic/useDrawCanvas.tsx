@@ -14,6 +14,8 @@ interface DrawCanvasState {
     activeColor?: Color
     activeBrush?: Brush
     activeLineWidth?: number
+    canUndo?: boolean
+    canRedo?: boolean
 }
 
 type MouseOrTouchEvent =
@@ -32,6 +34,7 @@ interface DrawCanvasDispatch {
     setColor?: (color: Color) => void
     setLineWidth?: (width: number) => void
     undo?: () => void
+    redo?: () => void
 }
 
 const DrawCanvasStateContext = createContext<DrawCanvasState>({})
@@ -51,6 +54,8 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
     const [brush, setBrush] = useState<Brush>(Brush.PENCIL)
     const [color, setColor] = useState<Color>(Color.BLACK)
     const [lineWidth, setLineWidth] = useState<number>(6)
+    const [canUndo, setCanUndo] = useState<boolean>(false)
+    const [canRedo, setCanRedo] = useState<boolean>(false)
 
     const drawStackRef = useRef<DrawStack[]>([])
     const redoStackRef = useRef<DrawStack[]>([])
@@ -62,6 +67,8 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
         activeBrush: brush,
         activeColor: color,
         activeLineWidth: lineWidth,
+        canUndo,
+        canRedo,
     }
 
     const dispatch = {
@@ -74,6 +81,12 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             }
             const stackItem = drawStackRef.current.pop()
             redoStackRef.current.push(stackItem)
+            if (!canRedo) {
+                setCanRedo(true)
+            }
+            if (!drawStackRef.current.length) {
+                setCanUndo(false)
+            }
             redraw(
                 contextRef.current,
                 tmpContextRef.current,
@@ -86,6 +99,12 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             }
             const stackItem = redoStackRef.current.pop()
             drawStackRef.current.push(stackItem)
+            if (!canUndo) {
+                setCanUndo(true)
+            }
+            if (!redoStackRef.current.length) {
+                setCanRedo(false)
+            }
             redraw(
                 contextRef.current,
                 tmpContextRef.current,
@@ -127,9 +146,16 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             e.preventDefault()
             if (strokeRef.current) {
                 drawStackRef.current.push(strokeRef.current)
+                if (!canUndo) {
+                    setCanUndo(true)
+                }
             }
             strokeRef.current = null
             isMouseDown.current = false
+            redoStackRef.current = []
+            if (canRedo) {
+                setCanRedo(false)
+            }
             brushes[brush].endStroke(contextRef.current, tmpContextRef.current)
         },
     }
