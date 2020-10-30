@@ -16,6 +16,7 @@ export enum Color {
 export enum Brush {
     PENCIL,
     ERASER,
+    PAINT_BRUSH,
 }
 
 export interface Coords {
@@ -23,8 +24,10 @@ export interface Coords {
     y: number
 }
 
-export interface DrawStep {
+export interface DrawStack {
     color: Color
+    lineWidth: number
+    brush: Brush
     points: Coords[]
 }
 

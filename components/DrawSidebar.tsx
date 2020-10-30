@@ -3,6 +3,8 @@ import Drawer from '@material-ui/core/Drawer'
 import { makeStyles } from '@material-ui/core/styles'
 import ControlColor from 'components/ControlColor'
 import ControlLineWidth from 'components/ControlLineWidth'
+import ControlBrush from 'components/ControlBrush'
+import ControlUndo from 'components/ControlUndo'
 
 const useStyles = makeStyles({
     drawer: {
@@ -25,6 +27,8 @@ const DrawSidebar: FunctionComponent = () => {
             <div className={classes.drawerContent}>
                 <ControlColor />
                 <ControlLineWidth />
+                <ControlBrush />
+                <ControlUndo />
             </div>
         </Drawer>
     )

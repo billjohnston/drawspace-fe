@@ -29,16 +29,14 @@ const DrawingCanvas: FunctionComponent = () => {
     const tmpCanvasRef = useRef<HTMLCanvasElement>()
 
     const {
-        initCanvas,
-        initTmpCanvas,
+        initCanvases,
         startStroke,
         drawStroke,
         endStroke,
     } = useDrawCanvasDispatch()
 
     useEffect(() => {
-        initTmpCanvas(tmpCanvasRef.current)
-        initCanvas(canvasRef.current)
+        initCanvases(canvasRef.current, tmpCanvasRef.current)
     }, [])
 
     return (

@@ -1,6 +1,13 @@
 import { FunctionComponent, ChangeEvent } from 'react'
 import { useDrawCanvasState, useDrawCanvasDispatch } from 'logic/useDrawCanvas'
 import Slider from '@material-ui/core/Slider'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles(({ spacing }) => ({
+    sliderWrapper: {
+        padding: spacing(2),
+    },
+}))
 
 const max = 20
 const step = 2
@@ -10,7 +17,8 @@ const marks = Array.from({ length: max / step }, (x, i: number) => ({
     label: i * step + step,
 }))
 
-const ControlColor: FunctionComponent = () => {
+const ControlLineWidth: FunctionComponent = () => {
+    const classes = useStyles()
     const { activeLineWidth } = useDrawCanvasState()
     const { setLineWidth } = useDrawCanvasDispatch()
 
@@ -19,16 +27,18 @@ const ControlColor: FunctionComponent = () => {
     }
 
     return (
-        <Slider
-            step={step}
-            min={step}
-            max={max}
-            marks={marks}
-            value={activeLineWidth}
-            onChange={handleChange}
-            aria-label="Change line width"
-        />
+        <div className={classes.sliderWrapper}>
+            <Slider
+                step={step}
+                min={step}
+                max={max}
+                marks={marks}
+                value={activeLineWidth}
+                onChange={handleChange}
+                aria-label="Change line width"
+            />
+        </div>
     )
 }
 
-export default ControlColor
+export default ControlLineWidth

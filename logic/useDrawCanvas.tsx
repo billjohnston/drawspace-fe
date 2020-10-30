@@ -7,12 +7,13 @@ import {
     TouchEvent,
     useState,
 } from 'react'
-import { Coords, DrawStep, Color, Brush } from 'types'
+import { Coords, DrawStack, Color, Brush } from 'types'
+import { initCanvas, brushes, redraw } from 'logic/canvasOperations'
 
 interface DrawCanvasState {
-    activeColor: Color
-    activeBrush: Brush
-    activeLineWidth: number
+    activeColor?: Color
+    activeBrush?: Brush
+    activeLineWidth?: number
 }
 
 type MouseOrTouchEvent =
@@ -20,48 +21,40 @@ type MouseOrTouchEvent =
     | TouchEvent<HTMLCanvasElement>
 
 interface DrawCanvasDispatch {
-    initCanvas?: (canvasEl: HTMLCanvasElement) => void
-    initTmpCanvas?: (canvasEl: HTMLCanvasElement) => void
+    initCanvases?: (
+        canvasEl: HTMLCanvasElement,
+        tmpCanvasEl: HTMLCanvasElement
+    ) => void
     startStroke?: (e: MouseOrTouchEvent) => void
     drawStroke?: (e: MouseOrTouchEvent) => void
     endStroke?: (e: MouseOrTouchEvent) => void
     setBrush?: (brush: Brush) => void
     setColor?: (color: Color) => void
     setLineWidth?: (width: number) => void
+    undo?: () => void
 }
 
 const DrawCanvasStateContext = createContext<DrawCanvasState>({})
 const DrawCanvasDispatchContext = createContext<DrawCanvasDispatch>({})
 
-const xyPosFromEvent = (e: MouseOrTouchEvent) => {
+const xyPosFromEvent = (e: MouseOrTouchEvent): Coords => {
     const { pageX, pageY } = e.nativeEvent
     const xPos = pageX - e.target.parentElement.offsetLeft
     const yPos = pageY - e.target.parentElement.offsetTop
-    return [xPos, yPos]
-}
-
-const midPointBtw = (
-    p1: { x: number; y: number },
-    p2: { x: number; y: number }
-) => {
-    return {
-        x: p1.x + (p2.x - p1.x) / 2,
-        y: p1.y + (p2.y - p1.y) / 2,
-    }
+    return { x: xPos, y: yPos }
 }
 
 const DrawCanvasProvider: FunctionComponent = ({ children }) => {
-    const canvasRef = useRef<HTMLCanvasElement>()
     const contextRef = useRef<CanvasRenderingContext2D>()
-    const tmpCanvasRef = useRef<HTMLCanvasElement>()
     const tmpContextRef = useRef<CanvasRenderingContext2D>()
 
     const [brush, setBrush] = useState<Brush>(Brush.PENCIL)
     const [color, setColor] = useState<Color>(Color.BLACK)
-    const [lineWidth, setLineWidth] = useState<number>(5)
+    const [lineWidth, setLineWidth] = useState<number>(6)
 
-    const drawPointsRef = useRef<Coords[]>([])
-    const drawStepsRef = useRef<DrawStep[]>([])
+    const drawStackRef = useRef<DrawStack[]>([])
+    const redoStackRef = useRef<DrawStack[]>([])
+    const strokeRef = useRef<DrawStack>()
 
     const isMouseDown = useRef<boolean>(false)
 
@@ -71,133 +64,73 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
         activeLineWidth: lineWidth,
     }
 
-    const commonEndStroke = () => {
-        // if (drawPointsRef.current.length) {
-        //     drawStepsRef.current.push({
-        //         // color: tmpCanvasCtx.strokeStyle,
-        //         points: drawPointsRef.current,
-        //     })
-        // }
-
-        drawPointsRef.current = []
-        isMouseDown.current = false
-        contextRef.current.drawImage(
-            tmpCanvasRef.current,
-            0,
-            0,
-            canvasRef.current.width * devicePixelRatio,
-            canvasRef.current.height * devicePixelRatio,
-            0,
-            0,
-            canvasRef.current.width,
-            canvasRef.current.height
-        )
-        // Clearing tmp canvas
-        tmpContextRef.current.clearRect(
-            0,
-            0,
-            tmpCanvasRef.current.width,
-            tmpCanvasRef.current.height
-        )
-    }
-
-    const brushes = {
-        [Brush.PENCIL]: {
-            startStroke: (e: MouseOrTouchEvent) => {
-                const [xPos, yPos] = xyPosFromEvent(e)
-                drawPointsRef.current.push({ x: xPos, y: yPos })
-                tmpContextRef.current.lineWidth = lineWidth
-                tmpContextRef.current.strokeStyle = color
-                tmpContextRef.current.lineCap = 'round'
-                tmpContextRef.current.lineJoin = 'round'
-                tmpContextRef.current.globalCompositeOperation = 'source-over'
-                isMouseDown.current = true
-            },
-            drawStroke: (e: MouseOrTouchEvent) => {
-                const [xPos, yPos] = xyPosFromEvent(e)
-                drawPointsRef.current.push({ x: xPos, y: yPos })
-
-                tmpContextRef.current.clearRect(
-                    0,
-                    0,
-                    tmpContextRef.current.canvas.width,
-                    tmpContextRef.current.canvas.height
-                )
-
-                let p1 = drawPointsRef.current[0]
-                let p2 = drawPointsRef.current[1]
-
-                tmpContextRef.current.beginPath()
-                tmpContextRef.current.moveTo(p1.x, p1.y)
-                drawPointsRef.current.forEach((x, i) => {
-                    const midPoint = midPointBtw(p1, p2)
-                    tmpContextRef.current.quadraticCurveTo(
-                        p1.x,
-                        p1.y,
-                        midPoint.x,
-                        midPoint.y
-                    )
-                    p1 = drawPointsRef.current[i]
-                    p2 = drawPointsRef.current[i + 1]
-                })
-
-                tmpContextRef.current.lineTo(p1.x, p1.y)
-                tmpContextRef.current.stroke()
-            },
-            endStroke: commonEndStroke,
-        },
-    }
-
     const dispatch = {
         setBrush,
         setColor,
         setLineWidth,
-        initCanvas: (canvasEl: HTMLCanvasElement): void => {
-            /* eslint-disable no-param-reassign */
-            canvasEl.style.width = `${canvasEl.parentElement.offsetWidth}px`
-            canvasEl.style.height = `${canvasEl.parentElement.offsetHeight}px`
-            canvasEl.width =
-                canvasEl.parentElement.offsetWidth * devicePixelRatio
-            canvasEl.height =
-                canvasEl.parentElement.offsetHeight * devicePixelRatio
-            /* eslint-enable */
-
-            const context = canvasEl.getContext('2d')
-            context.scale(devicePixelRatio, devicePixelRatio)
-            context.fillStyle = '#ffffff'
-            // context.fillRect(0, 0, canvasEl.width, canvasEl.height)
-            canvasRef.current = canvasEl
-            contextRef.current = context
+        undo: () => {
+            if (!drawStackRef.current.length) {
+                return
+            }
+            const stackItem = drawStackRef.current.pop()
+            redoStackRef.current.push(stackItem)
+            redraw(
+                contextRef.current,
+                tmpContextRef.current,
+                drawStackRef.current
+            )
         },
-        initTmpCanvas: (canvasEl: HTMLCanvasElement): void => {
-            /* eslint-disable no-param-reassign */
-            canvasEl.style.width = `${canvasEl.parentElement.offsetWidth}px`
-            canvasEl.style.height = `${canvasEl.parentElement.offsetHeight}px`
-            canvasEl.width =
-                canvasEl.parentElement.offsetWidth * devicePixelRatio
-            canvasEl.height =
-                canvasEl.parentElement.offsetHeight * devicePixelRatio
-            /* eslint-enable */
-
-            const context = canvasEl.getContext('2d')
-            context.scale(devicePixelRatio, devicePixelRatio)
-            tmpCanvasRef.current = canvasEl
-            tmpContextRef.current = context
+        redo: () => {
+            if (!redoStackRef.current.length) {
+                return
+            }
+            const stackItem = redoStackRef.current.pop()
+            drawStackRef.current.push(stackItem)
+            redraw(
+                contextRef.current,
+                tmpContextRef.current,
+                drawStackRef.current
+            )
+        },
+        initCanvases: (
+            canvasEl: HTMLCanvasElement,
+            tmpCanvasEl: HTMLCanvasElement
+        ): void => {
+            contextRef.current = initCanvas(canvasEl)
+            tmpContextRef.current = initCanvas(tmpCanvasEl)
         },
         startStroke: (e: MouseOrTouchEvent) => {
             e.preventDefault()
-            brushes[brush].startStroke(e)
+            isMouseDown.current = true
+            const coords = xyPosFromEvent(e)
+            strokeRef.current = {
+                brush,
+                color,
+                lineWidth,
+                points: [coords],
+            }
+            brushes[brush].startStroke(tmpContextRef.current, lineWidth, color)
         },
         drawStroke: (e: MouseOrTouchEvent) => {
             e.preventDefault()
             if (!isMouseDown.current) {
                 return
             }
-            brushes[brush].drawStroke(e)
+            const coords = xyPosFromEvent(e)
+            strokeRef.current.points.push(coords)
+            brushes[brush].drawStroke(
+                tmpContextRef.current,
+                strokeRef.current.points
+            )
         },
         endStroke: (e: MouseOrTouchEvent) => {
             e.preventDefault()
-            brushes[brush].endStroke()
+            if (strokeRef.current) {
+                drawStackRef.current.push(strokeRef.current)
+            }
+            strokeRef.current = null
+            isMouseDown.current = false
+            brushes[brush].endStroke(contextRef.current, tmpContextRef.current)
         },
     }
     return (
