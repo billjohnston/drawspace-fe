@@ -1,4 +1,14 @@
-import { MouseEvent, TouchEvent } from 'react'
+export enum ButtonType {
+    SUBMIT = 'submit',
+    BUTTON = 'button',
+}
+
+export enum TextFieldType {
+    TEXT = 'text',
+    PASSWORD = 'password',
+    EMAIL = 'email',
+    NUMBER = 'number',
+}
 
 export enum Color {
     VIOLET = '#9400D3',
@@ -31,4 +41,7 @@ export interface DrawStack {
     points: Coords[]
 }
 
-export type MouseOrTouchEvent<T> = MouseEvent<T> | TouchEvent<T>
+export interface StepFormComponentProps {
+    goToNextStep: () => void
+    setOpen: (open: boolean) => void
+}

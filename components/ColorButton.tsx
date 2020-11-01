@@ -5,7 +5,8 @@ import { Color } from 'types'
 
 const useStyles = makeStyles({
     button: {
-        padding: 12,
+        padding: 16,
+        margin: 2,
         border: '1px solid #888888',
         borderRadius: '50%',
     },

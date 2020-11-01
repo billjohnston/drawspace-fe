@@ -18,6 +18,7 @@ const ControlUndo: FunctionComponent = () => {
     const classes = useStyles()
     const { canUndo, canRedo } = useDrawCanvasState()
     const { undo, redo } = useDrawCanvasDispatch()
+
     return (
         <div className={classes.brushControlWrapper}>
             <Button

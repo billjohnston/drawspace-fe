@@ -6,14 +6,16 @@ import ControlLineWidth from 'components/ControlLineWidth'
 import ControlBrush from 'components/ControlBrush'
 import ControlUndo from 'components/ControlUndo'
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(({ spacing }) => ({
     drawer: {
         width: 200,
     },
     drawerContent: {
         width: 200,
+        marginTop: 64, // height of navigation
+        padding: spacing(2),
     },
-})
+}))
 
 const DrawSidebar: FunctionComponent = () => {
     const classes = useStyles()

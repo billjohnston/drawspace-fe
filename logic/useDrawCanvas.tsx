@@ -8,7 +8,11 @@ import {
     useState,
 } from 'react'
 import { Coords, DrawStack, Color, Brush } from 'types'
-import { initCanvas, brushes, redraw } from 'logic/canvasOperations'
+import { initCanvas, brushes, redraw } from 'logic/utilCanvasOperations'
+
+type MouseOrTouchEvent =
+    | MouseEvent<HTMLCanvasElement>
+    | TouchEvent<HTMLCanvasElement>
 
 interface DrawCanvasState {
     activeColor?: Color
@@ -17,10 +21,6 @@ interface DrawCanvasState {
     canUndo?: boolean
     canRedo?: boolean
 }
-
-type MouseOrTouchEvent =
-    | MouseEvent<HTMLCanvasElement>
-    | TouchEvent<HTMLCanvasElement>
 
 interface DrawCanvasDispatch {
     initCanvases?: (
@@ -53,7 +53,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
 
     const [brush, setBrush] = useState<Brush>(Brush.PENCIL)
     const [color, setColor] = useState<Color>(Color.BLACK)
-    const [lineWidth, setLineWidth] = useState<number>(6)
+    const [lineWidth, setLineWidth] = useState<number>(10)
     const [canUndo, setCanUndo] = useState<boolean>(false)
     const [canRedo, setCanRedo] = useState<boolean>(false)
 
