@@ -5,6 +5,7 @@ import ControlColor from 'components/ControlColor'
 import ControlLineWidth from 'components/ControlLineWidth'
 import ControlBrush from 'components/ControlBrush'
 import ControlUndo from 'components/ControlUndo'
+import ControlSaveDrawing from 'components/ControlSaveDrawing'
 
 const useStyles = makeStyles(({ spacing }) => ({
     drawer: {
@@ -31,6 +32,7 @@ const DrawSidebar: FunctionComponent = () => {
                 <ControlLineWidth />
                 <ControlBrush />
                 <ControlUndo />
+                <ControlSaveDrawing />
             </div>
         </Drawer>
     )

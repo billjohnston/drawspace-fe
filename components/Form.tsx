@@ -20,7 +20,7 @@ const validateForm = (schema: Record<string, unknown>) => async (
         .catch((err) => err)
 
 const Form: FunctionComponent<{
-    schema?: Record<string, unknown>
+    schema: Record<string, unknown>
     initialValues?: Record<string, unknown>
     onSubmit: ({
         formData,

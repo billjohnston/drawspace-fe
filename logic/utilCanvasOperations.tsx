@@ -114,3 +114,30 @@ export const redraw = (
         brushes[brush].endStroke(context, tmpContext)
     })
 }
+
+export const createThumbnail = (
+    context: CanvasRenderingContext2D,
+    size: number
+): Promise<Blob> =>
+    new Promise((resolve) => {
+        const thumbnailCanvas = document.createElement('canvas')
+        thumbnailCanvas.style.width = `${size}px`
+        thumbnailCanvas.style.height = `${size}px`
+        thumbnailCanvas.width = size * devicePixelRatio
+        thumbnailCanvas.height = size * devicePixelRatio
+        const thumbnailContext = thumbnailCanvas.getContext('2d')
+        const imageWidth = context.canvas.width / devicePixelRatio
+        const imageHeight = context.canvas.height / devicePixelRatio
+        const aspectHeight = (imageHeight * size) / imageWidth
+        const yOffset = (size - aspectHeight) / 2
+        thumbnailContext.drawImage(
+            context.canvas,
+            0,
+            yOffset * 2,
+            size * 2,
+            aspectHeight * 2
+        )
+        thumbnailContext.canvas.toBlob((blob) => {
+            resolve(blob)
+        })
+    })

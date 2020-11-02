@@ -41,7 +41,75 @@ export interface DrawStack {
     points: Coords[]
 }
 
+// FORM
 export interface StepFormComponentProps {
     goToNextStep: () => void
-    setOpen: (open: boolean) => void
+    goBackStep: () => void
+    setOpen: () => void
+    setClosed: () => void
+    handleLogin: () => void
+    handleSignUp: () => void
+}
+
+export interface FormError {
+    fieldErrors: {
+        [key: string]: string
+    }
+}
+
+export type FormResponse<TSuccess> = TSuccess | FormError
+
+export interface CreateDrawingFormData {
+    title: string
+    publish: boolean
+}
+
+// Ajax / API
+export interface ApiListResult<TEntity> {
+    items: TEntity[]
+    nextStartKey: string
+}
+
+export interface ApiError {
+    statusCode: number
+    message: string
+}
+
+export enum HttpMethods {
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    DELETE = 'DELETE',
+}
+
+export enum Credentials {
+    SAME_ORIGIN = 'same-origin',
+    INCLUDE = 'include',
+    OMIT = 'omit',
+}
+
+// Entities
+export interface User {
+    id: string
+    name: string
+    privateDrawingCount: number
+    publicDrawingCount: number
+    created: string
+    modified: string
+}
+
+export interface Drawing {
+    id: string
+    title: string
+    published: string
+    thumbnailUrl: string
+    drawStepsUrl: string
+    startTime: string
+    endTime: string
+    width: number
+    height: number
+    resolution: number
+    user: string
+    created: string
+    modified: string
 }

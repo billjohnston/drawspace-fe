@@ -1,20 +1,33 @@
 import { FunctionComponent } from 'react'
 import Form from 'components/Form'
 import FormFieldText from 'components/FormFieldText'
-import FormSubmit from 'components/FormSubmit'
-import { TextFieldType } from 'types'
-import useMutationLogin from 'logic/useMutationLogin';
+import useMutationLogin from 'logic/useMutationLogin'
+import { TextFieldType, StepFormComponentProps } from 'types'
+import FormSubmitArea from 'components/FormSubmitArea'
+import FormSubmitButton from 'components/FormSubmitButton'
+import Button from '@material-ui/core/Button'
 
-const FormStepCode: FunctionComponent<{
-    goToNextStep: () => void
-    setOpen: (open: boolean) => void
-}> = ({ setOpen }) => {
+const validationSchema = {
+    code: {
+        presence: true,
+        length: { is: 6 },
+    },
+}
+
+const FormStepCode: FunctionComponent<StepFormComponentProps> = ({
+    setClosed,
+    goBackStep,
+}) => {
     const [handleSubmit] = useMutationLogin()
     const handleSuccess = (): void => {
-        setOpen(false)
+        setClosed()
     }
     return (
-        <Form onSubmit={handleSubmit} onSuccess={handleSuccess}>
+        <Form
+            schema={validationSchema}
+            onSubmit={handleSubmit}
+            onSuccess={handleSuccess}
+        >
             {({ submitting }) => (
                 <>
                     <FormFieldText
@@ -23,7 +36,15 @@ const FormStepCode: FunctionComponent<{
                         textFieldType={TextFieldType.TEXT}
                         label="Verification Code"
                     />
-                    <FormSubmit submitting={submitting} label="Submit Email" />
+                    <FormSubmitArea>
+                        <Button onClick={goBackStep} variant="contained">
+                            Back
+                        </Button>
+                        <FormSubmitButton
+                            submitting={submitting}
+                            label="Submit Code"
+                        />
+                    </FormSubmitArea>
                 </>
             )}
         </Form>

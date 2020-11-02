@@ -8,7 +8,12 @@ import {
     useState,
 } from 'react'
 import { Coords, DrawStack, Color, Brush } from 'types'
-import { initCanvas, brushes, redraw } from 'logic/utilCanvasOperations'
+import {
+    initCanvas,
+    brushes,
+    redraw,
+    createThumbnail,
+} from 'logic/utilCanvasOperations'
 
 type MouseOrTouchEvent =
     | MouseEvent<HTMLCanvasElement>
@@ -35,6 +40,14 @@ interface DrawCanvasDispatch {
     setLineWidth?: (width: number) => void
     undo?: () => void
     redo?: () => void
+    getDrawingInfo: () => Promise<{
+        drawStack: DrawStack[]
+        thumbnailBlob: Blob
+        startTime: string
+        width: number
+        height: number
+        resolution: number
+    }>
 }
 
 const DrawCanvasStateContext = createContext<DrawCanvasState>({})
@@ -58,6 +71,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
     const [canRedo, setCanRedo] = useState<boolean>(false)
 
     const drawStackRef = useRef<DrawStack[]>([])
+    const startTimeRef = useRef<string>()
     const redoStackRef = useRef<DrawStack[]>([])
     const strokeRef = useRef<DrawStack>()
 
@@ -146,6 +160,9 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             e.preventDefault()
             if (strokeRef.current) {
                 drawStackRef.current.push(strokeRef.current)
+                if (drawStackRef.current.length === 1) {
+                    startTimeRef.current = new Date().toISOString()
+                }
                 if (!canUndo) {
                     setCanUndo(true)
                 }
@@ -157,6 +174,17 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
                 setCanRedo(false)
             }
             brushes[brush].endStroke(contextRef.current, tmpContextRef.current)
+        },
+        getDrawingInfo: async () => {
+            const thumbnailBlob = await createThumbnail(contextRef.current, 300)
+            return {
+                drawStack: drawStackRef.current,
+                startTime: startTimeRef.current,
+                thumbnailBlob,
+                width: contextRef.current.canvas.width,
+                height: contextRef.current.canvas.height,
+                resolution: devicePixelRatio,
+            }
         },
     }
     return (

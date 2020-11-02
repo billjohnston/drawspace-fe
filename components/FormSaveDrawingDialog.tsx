@@ -3,11 +3,14 @@ import Dialog from '@material-ui/core/Dialog'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 import FormStepLogin from 'components/FormStepLogin'
 import FormStepCode from 'components/FormStepCode'
 import FormStepSignUp from 'components/FormStepSignUp'
+import FormStepDrawing from 'components/FormStepDrawing'
 import FormStepLoginSignupChoice from 'components/FormStepLoginSignupChoice'
+import useQueryIsAuthenticated from 'logic/useQueryIsAuthenticated'
 
 import { makeStyles } from '@material-ui/core/styles'
 
@@ -27,7 +30,7 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
 }))
 
-const steps = [
+const stepsUnauthenticated = [
     {
         StepComponent: FormStepLoginSignupChoice,
         label: 'Login Or Sign Up',
@@ -38,6 +41,16 @@ const steps = [
     {
         StepComponent: FormStepCode,
         label: 'Verify Email',
+    },
+    {
+        StepComponent: FormStepDrawing,
+        label: 'Submit Drawing',
+    },
+]
+const stepsAuthenticated = [
+    {
+        StepComponent: FormStepDrawing,
+        label: 'Submit Drawing',
     },
 ]
 
@@ -52,10 +65,15 @@ const FormLoginDialog: FunctionComponent<Props> = ({
     setOpen,
     setClosed,
 }) => {
+    const { data: isAuthenticated, isFetching } = useQueryIsAuthenticated()
     const classes = useStyles()
     const [activeStep, setActiveStep] = useState(0)
-    const { StepComponent } = steps[activeStep]
-
+    const steps = isFetching
+        ? []
+        : isAuthenticated
+        ? stepsAuthenticated
+        : stepsUnauthenticated
+    const activeStepObj = steps[activeStep]
     const handleLogin = () => {
         steps[1].StepComponent = FormStepLogin
         setActiveStep(1)
@@ -82,25 +100,30 @@ const FormLoginDialog: FunctionComponent<Props> = ({
             maxWidth="sm"
             onExited={handleExited}
         >
-            {/* <DialogTitle id="Login / Sign Up">Login / Sign Up</DialogTitle> */}
             <div className={classes.dialogPadding}>
-                <Stepper activeStep={activeStep}>
-                    {steps.map(({ label }) => (
-                        <Step key={label}>
-                            <StepLabel>{label}</StepLabel>
-                        </Step>
-                    ))}
-                </Stepper>
-                <div>
-                    <StepComponent
-                        goToNextStep={goToNextStep}
-                        goBackStep={goBackStep}
-                        setOpen={setOpen}
-                        setClosed={setClosed}
-                        handleLogin={handleLogin}
-                        handleSignUp={handleSignUp}
-                    />
-                </div>
+                {isFetching ? (
+                    <CircularProgress variant="determinate" />
+                ) : (
+                    <>
+                        <Stepper activeStep={activeStep}>
+                            {steps.map(({ label }) => (
+                                <Step key={label}>
+                                    <StepLabel>{label}</StepLabel>
+                                </Step>
+                            ))}
+                        </Stepper>
+                        <div>
+                            <activeStepObj.StepComponent
+                                goToNextStep={goToNextStep}
+                                goBackStep={goBackStep}
+                                setOpen={setOpen}
+                                setClosed={setClosed}
+                                handleLogin={handleLogin}
+                                handleSignUp={handleSignUp}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
         </Dialog>
     )

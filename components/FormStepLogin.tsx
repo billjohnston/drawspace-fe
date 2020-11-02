@@ -1,9 +1,11 @@
 import { FunctionComponent } from 'react'
 import Form from 'components/Form'
 import FormFieldText from 'components/FormFieldText'
-import FormSubmit from 'components/FormSubmit'
-import { TextFieldType } from 'types'
-import useMutationStartSignIn from 'logic/useMutationStartSignIn'
+import { TextFieldType, StepFormComponentProps } from 'types'
+import useMutationStartLogin from 'logic/useMutationStartLogin'
+import FormSubmitArea from 'components/FormSubmitArea'
+import FormSubmitButton from 'components/FormSubmitButton'
+import Button from '@material-ui/core/Button'
 
 const validationSchema = {
     email: {
@@ -12,11 +14,11 @@ const validationSchema = {
     },
 }
 
-const FormLoginStep: FunctionComponent<{
-    goToNextStep: () => void
-    setOpen: (open: boolean) => void
-}> = ({ goToNextStep }) => {
-    const [handleSubmit] = useMutationStartSignIn()
+const FormLoginStep: FunctionComponent<StepFormComponentProps> = ({
+    goToNextStep,
+    goBackStep,
+}) => {
+    const [handleSubmit] = useMutationStartLogin()
     const handleSuccess = (): void => {
         goToNextStep()
     }
@@ -34,7 +36,15 @@ const FormLoginStep: FunctionComponent<{
                         textFieldType={TextFieldType.TEXT}
                         label="Email"
                     />
-                    <FormSubmit submitting={submitting} label="Submit Email" />
+                    <FormSubmitArea>
+                        <Button onClick={goBackStep} variant="contained">
+                            Back
+                        </Button>
+                        <FormSubmitButton
+                            submitting={submitting}
+                            label="Submit Email"
+                        />
+                    </FormSubmitArea>
                 </>
             )}
         </Form>

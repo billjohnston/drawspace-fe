@@ -23,7 +23,7 @@ const ControlUndo: FunctionComponent = () => {
         <div className={classes.brushControlWrapper}>
             <Button
                 variant="outlined"
-                disabled={!canUndo}
+                disabled={Boolean(!canUndo)}
                 startIcon={<UndoIcon />}
                 onClick={undo}
             >
@@ -31,7 +31,7 @@ const ControlUndo: FunctionComponent = () => {
             </Button>
             <Button
                 variant="outlined"
-                disabled={!canRedo}
+                disabled={Boolean(!canRedo)}
                 startIcon={<RedoIcon />}
                 onClick={redo}
             >
