@@ -65,14 +65,15 @@ const pencilBrush = {
 
         context.beginPath()
         context.moveTo(p1.x, p1.y)
-        points.forEach((x, i) => {
+        // eslint-disable-next-line no-plusplus
+        for (let i = 1; i < points.length - 2; i++) {
             const midPoint = midPointBtw(p1, p2)
             context.quadraticCurveTo(p1.x, p1.y, midPoint.x, midPoint.y)
             p1 = points[i]
             p2 = points[i + 1]
-        })
+        }
 
-        context.lineTo(p1.x, p1.y)
+        context.quadraticCurveTo(p1.x, p1.y, p2.x, p2.y)
         context.stroke()
     },
     endStroke: (
@@ -132,8 +133,10 @@ export const redraw = (
     clearCanvas(context)
     drawStack.forEach(({ brush, color, lineWidth, points }) => {
         brushes[brush].startStroke(tmpContext, lineWidth, color)
-        brushes[brush].drawStroke(tmpContext, points)
-        brushes[brush].endStroke(context, tmpContext)
+        if (points.length > 1) {
+            brushes[brush].drawStroke(tmpContext, points)
+        }
+        brushes[brush].endStroke(context, tmpContext, points)
     })
 }
 
