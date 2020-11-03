@@ -33,6 +33,16 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
         display: 'flex',
         flexDirection: 'column',
         padding: spacing(1),
+        '& > h6': {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        },
+        '& > span': {
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+        },
     },
 }))
 
