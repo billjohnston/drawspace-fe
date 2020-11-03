@@ -40,7 +40,6 @@ const PageDraw: FunctionComponent = () => {
                             <DrawSidebar />
                         </Hidden>
                         <DrawingCanvas />
-                        {/* <div style={{ flex: 1, display: 'flex'}}>hello</div> */}
                         <Hidden smUp>
                             <DrawingBottomNav />
                         </Hidden>

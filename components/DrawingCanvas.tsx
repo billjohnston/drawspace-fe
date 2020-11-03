@@ -15,11 +15,14 @@ const useStyles = makeStyles(({ spacing }) => ({
         position: 'relative',
     },
     canvas: {
-        touchAction: 'none',
+        width: '100%',
+        height: '100%',
     },
     tmpCanvas: {
         touchAction: 'none',
         position: 'absolute',
+        width: '100%',
+        height: '100%',
     },
 }))
 
@@ -36,13 +39,19 @@ const DrawingCanvas: FunctionComponent = () => {
     } = useDrawCanvasDispatch()
 
     useEffect(() => {
-        initCanvases(canvasRef.current, tmpCanvasRef.current)
+        setTimeout(() => {
+            initCanvases(canvasRef.current, tmpCanvasRef.current)
+        })
     }, [])
+
+    const handleDisableContext = (e) => {
+        e.preventDefault()
+    }
 
     return (
         <div className={classes.canvasWrapper}>
             <Paper className={classes.paper} elevation={3}>
-                <canvas className={classes.canvas} ref={canvasRef} />
+                <canvas ref={canvasRef} className={classes.canvas} />
                 <canvas
                     className={classes.tmpCanvas}
                     onMouseDown={startStroke}
@@ -52,6 +61,7 @@ const DrawingCanvas: FunctionComponent = () => {
                     onTouchMove={drawStroke}
                     onTouchEnd={endStroke}
                     onMouseLeave={endStroke}
+                    onContextMenu={handleDisableContext}
                     ref={tmpCanvasRef}
                 />
             </Paper>

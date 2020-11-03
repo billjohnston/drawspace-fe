@@ -129,8 +129,9 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             canvasEl: HTMLCanvasElement,
             tmpCanvasEl: HTMLCanvasElement
         ): void => {
-            contextRef.current = initCanvas(canvasEl)
-            tmpContextRef.current = initCanvas(tmpCanvasEl)
+            const [ctx, tmpCtx] = initCanvas(canvasEl, tmpCanvasEl)
+            contextRef.current = ctx
+            tmpContextRef.current = tmpCtx
         },
         startStroke: (e: MouseOrTouchEvent) => {
             e.preventDefault()
@@ -167,13 +168,19 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
                     setCanUndo(true)
                 }
             }
+
+            brushes[brush].endStroke(
+                contextRef.current,
+                tmpContextRef.current,
+                strokeRef.current ? strokeRef.current.points : []
+            )
+
             strokeRef.current = null
             isMouseDown.current = false
             redoStackRef.current = []
             if (canRedo) {
                 setCanRedo(false)
             }
-            brushes[brush].endStroke(contextRef.current, tmpContextRef.current)
         },
         getDrawingInfo: async () => {
             const thumbnailBlob = await createThumbnail(contextRef.current, 300)

@@ -8,18 +8,24 @@ const midPointBtw = (p1: Coords, p2: Coords): Coords => {
 }
 
 export const initCanvas = (
-    canvasEl: HTMLCanvasElement
-): CanvasRenderingContext2D => {
+    canvasEl: HTMLCanvasElement,
+    tmpCanvasEl: HTMLCanvasElement
+): [CanvasRenderingContext2D, CanvasRenderingContext2D] => {
     /* eslint-disable no-param-reassign */
-    // canvasEl.style.width = `${canvasEl.parentElement.offsetWidth}px`
-    // canvasEl.style.height = `${canvasEl.parentElement.offsetHeight}px`
-    // canvasEl.width = canvasEl.parentElement.offsetWidth * devicePixelRatio
-    // canvasEl.height = canvasEl.parentElement.offsetHeight * devicePixelRatio
+    const width = canvasEl.offsetWidth
+    const height = canvasEl.offsetHeight
+    canvasEl.width = width * devicePixelRatio
+    canvasEl.height = height * devicePixelRatio
+    tmpCanvasEl.width = width * devicePixelRatio
+    tmpCanvasEl.height = height * devicePixelRatio
     /* eslint-enable */
 
-    const context = canvasEl.getContext('2d')
-    context.scale(devicePixelRatio, devicePixelRatio)
-    return context
+    const ctx = canvasEl.getContext('2d')
+    ctx.scale(devicePixelRatio, devicePixelRatio)
+
+    const tmpCtx = tmpCanvasEl.getContext('2d')
+    tmpCtx.scale(devicePixelRatio, devicePixelRatio)
+    return [ctx, tmpCtx]
 }
 
 const clearCanvas = (context: CanvasRenderingContext2D) => {
@@ -34,8 +40,8 @@ const copyToCanvas = (
         tmpContext.canvas,
         0,
         0,
-        canvasContext.canvas.width / devicePixelRatio,
-        canvasContext.canvas.height / devicePixelRatio
+        canvasContext.canvas.width / 2,
+        canvasContext.canvas.height / 2
     )
 }
 
@@ -49,6 +55,7 @@ const pencilBrush = {
         context.lineJoin = 'round'
         context.lineWidth = lineWidth
         context.strokeStyle = color
+        context.fillStyle = color
     },
     drawStroke: (context: CanvasRenderingContext2D, points: Coords[]): void => {
         clearCanvas(context)
@@ -70,8 +77,24 @@ const pencilBrush = {
     },
     endStroke: (
         context: CanvasRenderingContext2D,
-        tmpContext: CanvasRenderingContext2D
+        tmpContext: CanvasRenderingContext2D,
+        points: Coords[]
     ): void => {
+        // dots
+        if (points.length === 1) {
+            const p1 = points[0]
+            tmpContext.beginPath()
+            tmpContext.arc(
+                p1.x,
+                p1.y,
+                tmpContext.lineWidth / 2,
+                0,
+                2 * Math.PI,
+                false
+            )
+            tmpContext.fill()
+            tmpContext.closePath()
+        }
         copyToCanvas(context, tmpContext)
         clearCanvas(tmpContext)
     },
@@ -80,19 +103,18 @@ const pencilBrush = {
 const eraserBrush = {
     startStroke: (
         context: CanvasRenderingContext2D,
-        lineWidth: number,
-        color: Color
+        lineWidth: number
     ): void => {
-        pencilBrush.startStroke(context, lineWidth, color)
-        context.strokeStyle = Color.WHITE
+        pencilBrush.startStroke(context, lineWidth, Color.WHITE)
     },
     drawStroke: pencilBrush.drawStroke,
     endStroke: (
         context: CanvasRenderingContext2D,
-        tmpContext: CanvasRenderingContext2D
+        tmpContext: CanvasRenderingContext2D,
+        points: Coords[]
     ): void => {
         context.globalCompositeOperation = 'destination-out'
-        pencilBrush.endStroke(context, tmpContext)
+        pencilBrush.endStroke(context, tmpContext, points)
         context.globalCompositeOperation = 'source-over'
     },
 }

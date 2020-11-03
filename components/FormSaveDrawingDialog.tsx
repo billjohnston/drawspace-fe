@@ -12,7 +12,8 @@ import FormStepDrawing from 'components/FormStepDrawing'
 import FormStepLoginSignupChoice from 'components/FormStepLoginSignupChoice'
 import useQueryIsAuthenticated from 'logic/useQueryIsAuthenticated'
 
-import { makeStyles } from '@material-ui/core/styles'
+import { useTheme, makeStyles } from '@material-ui/core/styles'
+import useMediaQuery from '@material-ui/core/useMediaQuery'
 
 const useStyles = makeStyles(({ spacing }) => ({
     dialogPadding: {
@@ -65,14 +66,21 @@ const FormLoginDialog: FunctionComponent<Props> = ({
     setOpen,
     setClosed,
 }) => {
+    const theme = useTheme()
+    const isXs = useMediaQuery(theme.breakpoints.only('xs'))
     const { data: isAuthenticated, isFetching } = useQueryIsAuthenticated()
     const classes = useStyles()
     const [activeStep, setActiveStep] = useState(0)
-    const steps = isFetching
-        ? []
-        : isAuthenticated
-        ? stepsAuthenticated
-        : stepsUnauthenticated
+
+    let steps = []
+    if (isFetching) {
+        steps = []
+    } else if (isAuthenticated) {
+        steps = stepsAuthenticated
+    } else {
+        steps = stepsUnauthenticated
+    }
+
     const activeStepObj = steps[activeStep]
     const handleLogin = () => {
         steps[1].StepComponent = FormStepLogin
@@ -93,12 +101,13 @@ const FormLoginDialog: FunctionComponent<Props> = ({
     }
     return (
         <Dialog
-            aria-labelledby="Login / Sign Up"
+            aria-labelledby="Save Drawing"
             open={open}
             onClose={setClosed}
             fullWidth
             maxWidth="sm"
             onExited={handleExited}
+            fullScreen={isXs}
         >
             <div className={classes.dialogPadding}>
                 {isFetching ? (
