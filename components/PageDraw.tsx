@@ -4,19 +4,48 @@ import { DrawCanvasProvider } from 'logic/useDrawCanvas'
 import DrawSidebar from 'components/DrawSidebar'
 import FullScreenPage from 'components/FullScreenPage'
 import Head from 'next/head'
+import Hidden from '@material-ui/core/Hidden'
 import { appName } from 'logic/envVars'
+import DrawingBottomNav from 'components/DrawingBottomNav'
+import { makeStyles } from '@material-ui/core/styles'
+
+const useStyles = makeStyles(({ breakpoints }) => ({
+    wrapper: {
+        display: 'flex',
+        flex: 1,
+    },
+    [breakpoints.only('xs')]: {
+        wrapper: {
+            flexDirection: 'column',
+        },
+    },
+    [breakpoints.up('sm')]: {
+        wrapper: {
+            flexDirection: 'row',
+        },
+    },
+}))
 
 const PageDraw: FunctionComponent = () => {
+    const classes = useStyles()
     return (
         <>
             <Head>
                 <title>Draw | {appName}</title>
             </Head>
             <FullScreenPage>
-                <DrawCanvasProvider>
-                    <DrawSidebar />
-                    <DrawingCanvas />
-                </DrawCanvasProvider>
+                <div className={classes.wrapper}>
+                    <DrawCanvasProvider>
+                        <Hidden only="xs">
+                            <DrawSidebar />
+                        </Hidden>
+                        <DrawingCanvas />
+                        {/* <div style={{ flex: 1, display: 'flex'}}>hello</div> */}
+                        <Hidden smUp>
+                            <DrawingBottomNav />
+                        </Hidden>
+                    </DrawCanvasProvider>
+                </div>
             </FullScreenPage>
         </>
     )

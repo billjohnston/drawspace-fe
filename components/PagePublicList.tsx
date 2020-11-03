@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { appName } from 'logic/envVars'
 import FullScreenPage from 'components/FullScreenPage'
 import Typography from '@material-ui/core/Typography'
+import Paper from '@material-ui/core/Paper'
 import Skeleton from '@material-ui/lab/Skeleton'
 import PageError from 'components/PageError'
 import Container from 'components/Container'
@@ -60,14 +61,15 @@ const PageMyDrawings: FunctionComponent = () => {
                 <Container>
                     <Typography variant="h6">Newest Drawings</Typography>
                     <div className={classes.gridWrapper}>
-                    {isLoading
+                        {isLoading
                             ? skeletonArr.map((x, i) => (
-                                  <Skeleton
-                                      key={i}
-                                      width="100%"
-                                      height="100%"
-                                      variant="rect"
-                                  />
+                                  <Paper key={i} elevation={2}>
+                                      <Skeleton
+                                          width="100%"
+                                          height="100%"
+                                          variant="rect"
+                                      />
+                                  </Paper>
                               ))
                             : data.map(({ id, title, thumbnailUrl }) => (
                                   <DrawingCard

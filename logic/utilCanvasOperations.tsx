@@ -11,10 +11,10 @@ export const initCanvas = (
     canvasEl: HTMLCanvasElement
 ): CanvasRenderingContext2D => {
     /* eslint-disable no-param-reassign */
-    canvasEl.style.width = `${canvasEl.parentElement.offsetWidth}px`
-    canvasEl.style.height = `${canvasEl.parentElement.offsetHeight}px`
-    canvasEl.width = canvasEl.parentElement.offsetWidth * devicePixelRatio
-    canvasEl.height = canvasEl.parentElement.offsetHeight * devicePixelRatio
+    // canvasEl.style.width = `${canvasEl.parentElement.offsetWidth}px`
+    // canvasEl.style.height = `${canvasEl.parentElement.offsetHeight}px`
+    // canvasEl.width = canvasEl.parentElement.offsetWidth * devicePixelRatio
+    // canvasEl.height = canvasEl.parentElement.offsetHeight * devicePixelRatio
     /* eslint-enable */
 
     const context = canvasEl.getContext('2d')

@@ -4,21 +4,18 @@ import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
+import Hidden from '@material-ui/core/Hidden'
 import BrushIcon from '@material-ui/icons/Brush'
 import { appName } from 'logic/envVars'
 import FormLoginDialog from 'components/FormLoginDialog'
 import Link from 'next/link'
-
 import useQueryIsAuthenticated from 'logic/useQueryIsAuthenticated'
 
 const useStyles = makeStyles((theme) => ({
     root: {
-        flexGrow: 1,
+        // flexGrow: 1,
         zIndex: theme.zIndex.drawer + 1,
         position: 'relative',
-    },
-    menuButton: {
-        marginRight: theme.spacing(2),
     },
     title: {
         flexGrow: 1,
@@ -41,24 +38,43 @@ const Navigation: FunctionComponent = () => {
             <AppBar position="static">
                 <Toolbar>
                     <BrushIcon />
-                    <Typography variant="h6" className={classes.title}>
-                        {appName}
-                    </Typography>
-                    {/* <Link href="/">
-                        <Button color="inherit">Public Drawings</Button>
-                    </Link>
-                    <Link href="/draw">
-                        <Button color="inherit">Create Drawing</Button>
-                    </Link> */}
+                    <Hidden only="xs">
+                        <Link href="/">
+                            <Typography variant="h6" className={classes.title}>
+                                {appName}
+                            </Typography>
+                        </Link>
+                        <Link href="/">
+                            <Button color="inherit">Public Drawings</Button>
+                        </Link>
+                        <Link href="/draw">
+                            <Button color="inherit">Create Drawing</Button>
+                        </Link>
+                    </Hidden>
+                    <Hidden smUp>
+                        <Link href="/">
+                            <Typography variant="h6" className={classes.title}>
+                                DS
+                            </Typography>
+                        </Link>
+                        <Link href="/">
+                            <Button color="inherit">Public</Button>
+                        </Link>
+                        <Link href="/draw">
+                            <Button color="inherit">Create</Button>
+                        </Link>
+                    </Hidden>
                     {isFetching ? null : isAuthenticated ? (
-                        <div>:D</div>
+                        <Link href="/my-drawings">
+                            <Button color="inherit">My Drawings</Button>
+                        </Link>
                     ) : (
                         <Button
                             color="inherit"
                             onClick={openLoginDialog}
                             aria-label="Login / Sign Up"
                         >
-                            Login / Sign Up
+                            Join
                         </Button>
                     )}
                     <FormLoginDialog

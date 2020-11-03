@@ -13,28 +13,22 @@ const useStyles = makeStyles(({ spacing }) => ({
     },
     drawerContent: {
         width: 200,
-        marginTop: 64, // height of navigation
         padding: spacing(2),
+        display: 'flex',
+        flexDirection: 'column',
     },
 }))
 
 const DrawSidebar: FunctionComponent = () => {
     const classes = useStyles()
     return (
-        <Drawer
-            className={classes.drawer}
-            variant="persistent"
-            anchor="left"
-            open
-        >
-            <div className={classes.drawerContent}>
-                <ControlColor />
-                <ControlLineWidth />
-                <ControlBrush />
-                <ControlUndo />
-                <ControlSaveDrawing />
-            </div>
-        </Drawer>
+        <div className={classes.drawerContent}>
+            <ControlColor />
+            <ControlLineWidth />
+            <ControlBrush />
+            <ControlUndo />
+            <ControlSaveDrawing />
+        </div>
     )
 }
 

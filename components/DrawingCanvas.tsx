@@ -41,7 +41,7 @@ const DrawingCanvas: FunctionComponent = () => {
 
     return (
         <div className={classes.canvasWrapper}>
-            <Paper className={classes.paper} elevation={2}>
+            <Paper className={classes.paper} elevation={3}>
                 <canvas className={classes.canvas} ref={canvasRef} />
                 <canvas
                     className={classes.tmpCanvas}

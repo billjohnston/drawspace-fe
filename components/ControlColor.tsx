@@ -13,7 +13,7 @@ const ControlColor: FunctionComponent = () => {
         setColor(color)
     }
     return (
-        <>
+        <div>
             {Object.entries(Color).map(([name, color]) => (
                 <ColorButton
                     isActive={activeColor === color}
@@ -23,7 +23,7 @@ const ControlColor: FunctionComponent = () => {
                     color={color}
                 />
             ))}
-        </>
+        </div>
     )
 }
 
