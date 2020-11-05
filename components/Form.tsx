@@ -80,19 +80,6 @@ const Form: FunctionComponent<{
                         addPreSubmitPromise,
                         values,
                     })}
-                    {/* Uncomment below to debug form values */}
-                    {(() => {
-                        const { FormSpy } = require('react-final-form')
-                        return (
-                            <FormSpy subscription={{ values: true }}>
-                                {({ values: spyValues }) => (
-                                    <pre>
-                                        {JSON.stringify(spyValues, null, 2)}
-                                    </pre>
-                                )}
-                            </FormSpy>
-                        )
-                    })()}
                 </form>
             )}
         />

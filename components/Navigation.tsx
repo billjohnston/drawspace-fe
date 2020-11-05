@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button'
 import Typography from '@material-ui/core/Typography'
 import Hidden from '@material-ui/core/Hidden'
 import BrushIcon from '@material-ui/icons/Brush'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
 import { appName } from 'logic/envVars'
 import FormLoginDialog from 'components/FormLoginDialog'
 import Link from 'next/link'
@@ -65,9 +66,7 @@ const Navigation: FunctionComponent = () => {
                         </Link>
                     </Hidden>
                     {isFetching ? null : isAuthenticated ? (
-                        <Link href="/my-drawings">
-                            <Button color="inherit">My Drawings</Button>
-                        </Link>
+                        <AccountCircleIcon />
                     ) : (
                         <Button
                             color="inherit"

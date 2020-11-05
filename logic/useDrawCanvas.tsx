@@ -4,8 +4,8 @@ import {
     useContext,
     useRef,
     MouseEvent,
-    TouchEvent,
     useState,
+    MouseEventHandler,
 } from 'react'
 import {
     initCanvas,
@@ -15,9 +15,6 @@ import {
 } from 'logic/utilCanvasOperations'
 import { Coords, DrawStack, Color, Brush } from 'types'
 
-type MouseOrTouchEvent =
-    | MouseEvent<HTMLCanvasElement>
-    | TouchEvent<HTMLCanvasElement>
 
 interface DrawCanvasState {
     activeColor?: Color
@@ -32,9 +29,9 @@ interface DrawCanvasDispatch {
         canvasEl: HTMLCanvasElement,
         tmpCanvasEl: HTMLCanvasElement
     ) => void
-    startStroke?: (e: MouseOrTouchEvent) => void
-    drawStroke?: (e: MouseOrTouchEvent) => void
-    endStroke?: (e: MouseOrTouchEvent) => void
+    startStroke?: MouseEventHandler
+    drawStroke?: MouseEventHandler
+    endStroke?: MouseEventHandler
     setBrush?: (brush: Brush) => void
     setColor?: (color: Color) => void
     setLineWidth?: (width: number) => void
@@ -53,7 +50,7 @@ interface DrawCanvasDispatch {
 const DrawCanvasStateContext = createContext<DrawCanvasState>({})
 const DrawCanvasDispatchContext = createContext<DrawCanvasDispatch>({})
 
-const xyPosFromEvent = (e: MouseOrTouchEvent): Coords => {
+const xyPosFromEvent = (e: MouseEvent): Coords => {
     // @ts-ignore these events do exist on both events
     const { pageX, pageY } = e.nativeEvent
     // @ts-ignore parentelement exists
@@ -136,7 +133,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             contextRef.current = ctx
             tmpContextRef.current = tmpCtx
         },
-        startStroke: (e: MouseOrTouchEvent) => {
+        startStroke: (e: MouseEvent<HTMLCanvasElement>) => {
             e.preventDefault()
             isMouseDown.current = true
             const coords = xyPosFromEvent(e)
@@ -148,7 +145,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             }
             brushes[brush].startStroke(tmpContextRef.current, lineWidth, color)
         },
-        drawStroke: (e: MouseOrTouchEvent) => {
+        drawStroke: (e: MouseEvent<HTMLCanvasElement>) => {
             e.preventDefault()
             if (!isMouseDown.current) {
                 return
@@ -160,7 +157,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
                 strokeRef.current.points
             )
         },
-        endStroke: (e: MouseOrTouchEvent) => {
+        endStroke: (e: MouseEvent<HTMLCanvasElement>) => {
             e.preventDefault()
             if (strokeRef.current) {
                 drawStackRef.current.push(strokeRef.current)

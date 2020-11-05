@@ -54,8 +54,11 @@ const DrawingCanvas: FunctionComponent = () => {
                 onMouseDown={startStroke}
                 onMouseMove={drawStroke}
                 onMouseUp={endStroke}
+                // @ts-ignore
                 onTouchStart={startStroke}
+                // @ts-ignore
                 onTouchMove={drawStroke}
+                // @ts-ignore
                 onTouchEnd={endStroke}
                 onMouseLeave={endStroke}
             />

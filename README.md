@@ -17,11 +17,15 @@ to keep all the canvas operation in on place `utilCanvasOperations`
 I used context to keep the business logic separate from the display components
 while allowing children components to change the state of the drawing tools.
 
+I used two canvas (`canvas` / `tmpCanvas`) to allow for smoother lines using quadraticCurveTo
 
-### Didn't Implement
+
+### Didn't Implement / Trade offs
 - Redraw doesn't show the drawing of lines (not enough time to figure out how to animate quadraticCurveTo)
 - Logout (not enough time)
 - Page to view the current signed in users drawings (not enough time)
 - Public Page pagination (not enough time)
 - Resize canvas (not quite shure how I'd handle this, would probably want to keep the canvas its original size as not to distort the drawing)
 - I don't love how the login dialog works, would like to spend more time polishing its architecture
+- I generally like a flat folder structure but this started to get to big for that to be reasonable. Would like to have split up the components more
+- I had to use a setTimeout to initialize the canvases. I wanted to make them the full width of the page to give maximum drawing area, but if I initialized them immediately the element would give the wrong width/height
