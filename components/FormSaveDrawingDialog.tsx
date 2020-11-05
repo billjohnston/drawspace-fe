@@ -5,6 +5,8 @@ import Step from '@material-ui/core/Step'
 import StepLabel from '@material-ui/core/StepLabel'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
+import CloseIcon from '@material-ui/icons/Close'
+import IconButton from '@material-ui/core/IconButton'
 import FormStepLogin from 'components/FormStepLogin'
 import FormStepCode from 'components/FormStepCode'
 import FormStepSignUp from 'components/FormStepSignUp'
@@ -15,9 +17,17 @@ import useQueryIsAuthenticated from 'logic/useQueryIsAuthenticated'
 import { useTheme, makeStyles } from '@material-ui/core/styles'
 import useMediaQuery from '@material-ui/core/useMediaQuery'
 
-const useStyles = makeStyles(({ spacing }) => ({
-    dialogPadding: {
-        padding: spacing(4),
+const useStyles = makeStyles(({ spacing, palette, breakpoints }) => ({
+    [breakpoints.only('xs')]: {
+        dialogPadding: {
+            padding: spacing(1),
+            marginTop: spacing(5),
+        },
+    },
+    [breakpoints.up('sm')]: {
+        dialogPadding: {
+            padding: spacing(4),
+        },
     },
     loginSignupWrapper: {
         display: 'flex',
@@ -29,12 +39,18 @@ const useStyles = makeStyles(({ spacing }) => ({
         paddingTop: spacing(4),
         paddingBottom: spacing(4),
     },
+    closeButton: {
+        position: 'absolute',
+        right: spacing(1),
+        top: spacing(1),
+        color: palette.grey[500],
+    },
 }))
 
 const stepsUnauthenticated = [
     {
         StepComponent: FormStepLoginSignupChoice,
-        label: 'Login Or Sign Up',
+        label: 'Login / SignUp',
     },
     {
         label: 'Submit Info',
@@ -71,23 +87,22 @@ const FormLoginDialog: FunctionComponent<Props> = ({
     const { data: isAuthenticated, isFetching } = useQueryIsAuthenticated()
     const classes = useStyles()
     const [activeStep, setActiveStep] = useState(0)
+    const [whichSteps, setWhichSteps] = useState([])
 
-    let steps = []
-    if (isFetching) {
-        steps = []
-    } else if (isAuthenticated) {
-        steps = stepsAuthenticated
-    } else {
-        steps = stepsUnauthenticated
+    const handleOnEntering = () => {
+        if (isAuthenticated) {
+            setWhichSteps(stepsAuthenticated)
+        } else {
+            setWhichSteps(stepsUnauthenticated)
+        }
     }
-
-    const activeStepObj = steps[activeStep]
+    const activeStepObj = whichSteps[activeStep]
     const handleLogin = () => {
-        steps[1].StepComponent = FormStepLogin
+        whichSteps[1].StepComponent = FormStepLogin
         setActiveStep(1)
     }
     const handleSignUp = () => {
-        steps[1].StepComponent = FormStepSignUp
+        whichSteps[1].StepComponent = FormStepSignUp
         setActiveStep(1)
     }
     const goToNextStep = () => {
@@ -107,31 +122,43 @@ const FormLoginDialog: FunctionComponent<Props> = ({
             fullWidth
             maxWidth="sm"
             onExited={handleExited}
+            onEntering={handleOnEntering}
             fullScreen={isXs}
         >
+            <IconButton
+                aria-label="close"
+                className={classes.closeButton}
+                onClick={setClosed}
+            >
+                <CloseIcon />
+            </IconButton>
             <div className={classes.dialogPadding}>
                 {isFetching ? (
                     <CircularProgress variant="determinate" />
                 ) : (
-                    <>
-                        <Stepper activeStep={activeStep}>
-                            {steps.map(({ label }) => (
-                                <Step key={label}>
-                                    <StepLabel>{label}</StepLabel>
-                                </Step>
-                            ))}
-                        </Stepper>
-                        <div>
-                            <activeStepObj.StepComponent
-                                goToNextStep={goToNextStep}
-                                goBackStep={goBackStep}
-                                setOpen={setOpen}
-                                setClosed={setClosed}
-                                handleLogin={handleLogin}
-                                handleSignUp={handleSignUp}
-                            />
-                        </div>
-                    </>
+                    whichSteps &&
+                    activeStepObj && (
+                        <>
+                            <Stepper alternativeLabel activeStep={activeStep}>
+                                {whichSteps.map(({ label }) => (
+                                    <Step key={label}>
+                                        <StepLabel>{label}</StepLabel>
+                                    </Step>
+                                ))}
+                            </Stepper>
+                            <div>
+                                <activeStepObj.StepComponent
+                                    goToNextStep={goToNextStep}
+                                    goBackStep={goBackStep}
+                                    setOpen={setOpen}
+                                    setClosed={setClosed}
+                                    handleLogin={handleLogin}
+                                    handleSignUp={handleSignUp}
+                                    isSaveDialog
+                                />
+                            </div>
+                        </>
+                    )
                 )}
             </div>
         </Dialog>

@@ -17,10 +17,16 @@ const validationSchema = {
 const FormStepCode: FunctionComponent<StepFormComponentProps> = ({
     setClosed,
     goBackStep,
+    goToNextStep,
+    isSaveDialog,
 }) => {
     const [handleSubmit] = useMutationLogin()
     const handleSuccess = (): void => {
-        setClosed()
+        if (isSaveDialog) {
+            goToNextStep()
+        } else {
+            setClosed()
+        }
     }
     return (
         <Form

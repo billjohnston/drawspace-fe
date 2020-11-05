@@ -50,6 +50,7 @@ export interface StepFormComponentProps {
     setClosed: () => void
     handleLogin: () => void
     handleSignUp: () => void
+    isSaveDialog: boolean
 }
 
 export interface FormError {
