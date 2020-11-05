@@ -33,3 +33,4 @@ I used two canvas (`canvas` / `tmpCanvas`) to allow for smoother lines using qua
 - I don't love how the login dialog works, would like to spend more time polishing its architecture
 - I generally like a flat folder structure but this started to get to big for that to be reasonable. Would like to have split up the components more
 - I had to use a setTimeout to initialize the canvases. I wanted to make them the full width of the page to give maximum drawing area, but if I initialized them immediately the element would give the wrong width/height
+- Weird display bug when the drawings load on the public list page.  Probably has to do with the image loading
