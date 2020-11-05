@@ -33,6 +33,7 @@ export interface Coords {
     x: number
     y: number
     rand?: number
+    scaledRand?: number
 }
 
 export interface DrawStack {

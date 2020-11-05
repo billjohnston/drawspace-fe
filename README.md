@@ -1,30 +1,27 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+### Running Locally
+`yarn install`
 
-## Getting Started
+`yarn dev`
 
-First, run the development server:
+### General architecture
+Built using next.js for static rendering of the website.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+Used material-ui for their styling/theming and common UI components
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+I created a context API called `useDrawCanvas` to allow for dispatching events
+to the drawing canvas and setting of state that will be consumed children. Tried
+to keep all the canvas operation in on place `utilCanvasOperations`
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-## Learn More
+### Reasoning
+I used context to keep the business logic separate from the display components
+while allowing children components to change the state of the drawing tools.
 
-To learn more about Next.js, take a look at the following resources:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/import?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Didn't Implement
+- Redraw doesn't show the drawing of lines (not enough time to figure out how to animate quadraticCurveTo)
+- Logout (not enough time)
+- Page to view the current signed in users drawings (not enough time)
+- Public Page pagination (not enough time)
+- Resize canvas (not quite shure how I'd handle this, would probably want to keep the canvas its original size as not to distort the drawing)
+- I don't love how the login dialog works, would like to spend more time polishing its architecture
