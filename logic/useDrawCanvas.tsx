@@ -40,7 +40,7 @@ interface DrawCanvasDispatch {
     setLineWidth?: (width: number) => void
     undo?: () => void
     redo?: () => void
-    getDrawingInfo: () => Promise<{
+    getDrawingInfo?: () => Promise<{
         drawStack: DrawStack[]
         thumbnailBlob: Blob
         startTime: string
@@ -54,8 +54,11 @@ const DrawCanvasStateContext = createContext<DrawCanvasState>({})
 const DrawCanvasDispatchContext = createContext<DrawCanvasDispatch>({})
 
 const xyPosFromEvent = (e: MouseOrTouchEvent): Coords => {
+    // @ts-ignore these events do exist on both events
     const { pageX, pageY } = e.nativeEvent
+    // @ts-ignore parentelement exists
     const xPos = pageX - e.target.parentElement.offsetLeft
+    // @ts-ignore
     const yPos = pageY - e.target.parentElement.offsetTop
     return { x: xPos, y: yPos }
 }

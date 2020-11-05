@@ -3,23 +3,30 @@ import { usePaginatedQuery, PaginatedQueryResult } from 'react-query'
 import { publicDrawings } from 'logic/utilQueryKeys'
 import utilApiRequest from 'logic/utilApiRequest'
 
-import { Drawing, HttpMethods, ApiError, ApiListResult } from 'types'
+import {
+    UserPopulatedDrawing,
+    HttpMethods,
+    ApiError,
+    ApiListResult,
+} from 'types'
 
-const getPublicDrawings = () => async (): Promise<Drawing[]> => {
-    const res = await utilApiRequest<ApiListResult<Drawing>>({
+const getPublicDrawings = () => async (): Promise<UserPopulatedDrawing[]> => {
+    const res = await utilApiRequest<ApiListResult<UserPopulatedDrawing>>({
         path: `/v1/drawings`,
         method: HttpMethods.GET,
         auth: false,
     })
-
     return Promise.all(
         res.items.map(async (drawing) => {
-            const signedThumbnailUrl: string = await Storage.get(
-                drawing.thumbnailUrl,
-                {
-                    level: 'public',
-                }
-            )
+            let signedThumbnailUrl: string
+            const storageGetRes = await Storage.get(drawing.thumbnailUrl, {
+                level: 'public',
+            })
+            if (typeof storageGetRes === 'string') {
+                signedThumbnailUrl = storageGetRes
+            } else {
+                throw new Error('Failed to get signed thumbnail')
+            }
             return {
                 ...drawing,
                 thumbnailUrl: signedThumbnailUrl,
@@ -29,10 +36,10 @@ const getPublicDrawings = () => async (): Promise<Drawing[]> => {
 }
 
 export default function useQueryMyPosts(): PaginatedQueryResult<
-    Drawing[],
+    UserPopulatedDrawing[],
     ApiError
 > {
-    return usePaginatedQuery<Drawing[], ApiError>({
+    return usePaginatedQuery<UserPopulatedDrawing[], ApiError>({
         queryKey: publicDrawings,
         queryFn: getPublicDrawings(),
     })

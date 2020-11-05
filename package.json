@@ -4,9 +4,9 @@
 	"private": true,
 	"scripts": {
 		"dev": "next dev -p 8686",
-		"build": "next build",
+		"build": "next build && next export",
 		"start": "next start",
-		"deploy": "next build && next export && aws s3 sync ./out s3://ftwebhoststaging-content88381566-grp39bp7gern --profile FtStagingAdmin && aws cloudfront create-invalidation --distribution-id EY7DW8CHD9MT2 --paths \"/*\" --profile FtStagingAdmin"
+		"deploy": "yarn build && aws s3 sync ./out s3://drawspacewebhoststaging-content88381566-j65f578yun9x --profile DrawSpaceStagingAdmin && aws cloudfront create-invalidation --distribution-id E3L0KKSTG2GCA7 --paths \"/*\" --profile DrawSpaceStagingAdmin"
 	},
 	"dependencies": {
 		"@aws-amplify/auth": "^3.4.9",

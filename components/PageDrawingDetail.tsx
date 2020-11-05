@@ -11,7 +11,7 @@ import Container from 'components/Container'
 
 const PageMyDrawings: FunctionComponent = () => {
     const router = useRouter()
-    const { id: drawingId } = router.query
+    const { id: drawingId }: { id?: string } = router.query
     const { data, isLoading, isIdle, error } = useQueryDrawingDetail(drawingId)
     const waiting = isLoading || isIdle
     if (error) {

@@ -5,6 +5,7 @@ import utilApiRequest from 'logic/utilApiRequest'
 
 import { Drawing, HttpMethods, ApiError } from 'types'
 
+
 const getDrawing = (drawingId: string) => async (): Promise<Drawing> => {
     const res = await utilApiRequest<Drawing>({
         path: `/v1/drawings/${drawingId}`,
@@ -12,9 +13,15 @@ const getDrawing = (drawingId: string) => async (): Promise<Drawing> => {
         auth: false,
     })
 
-    const signedThumbnailUrl: string = await Storage.get(res.thumbnailUrl, {
+    let signedThumbnailUrl: string
+    const storageGetRes = await Storage.get(res.thumbnailUrl, {
         level: 'public',
     })
+    if (typeof storageGetRes === 'string') {
+        signedThumbnailUrl = storageGetRes
+    } else {
+        throw new Error('Failed to get signed thumbnail')
+    }
 
     return {
         ...res,
@@ -22,8 +29,8 @@ const getDrawing = (drawingId: string) => async (): Promise<Drawing> => {
     }
 }
 
-export default function useQueryMyPosts(
-    drawingId: string | undefined
+export default function useQueryDrawingDetail(
+    drawingId: string
 ): QueryResult<Drawing, ApiError> {
     return useQuery<Drawing, ApiError>({
         queryKey: drawing(drawingId),

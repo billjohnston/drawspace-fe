@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { makeStyles } from '@material-ui/core/styles'
 import Typography from '@material-ui/core/Typography'
 import Paper from '@material-ui/core/Paper'
+import { User } from 'types'
 
 const useStyles = makeStyles(({ spacing, palette }) => ({
     tile: {
@@ -47,26 +48,32 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
 }))
 
 interface Props {
-    id: string
+    href: string
+    imageUrl: string
     title: string
-    thumbnailUrl: string
+    subTitle: string
 }
-const DrawingCard: FunctionComponent<Props> = ({ id, title, thumbnailUrl }) => {
+const DrawingCard: FunctionComponent<Props> = ({
+    href,
+    imageUrl,
+    title,
+    subTitle,
+}) => {
     const classes = useStyles()
     return (
         <div className={classes.tile}>
             <Paper elevation={2}>
-                <Link href={`/drawing-detail?id=${id}`}>
+                <Link href={href}>
                     <div className={classes.imageWrapper}>
                         <img
                             className={classes.image}
-                            src={thumbnailUrl}
+                            src={imageUrl}
                             alt={title}
                         />
                         <div className={classes.imageInfo}>
                             <Typography variant="subtitle2">{title}</Typography>
                             <Typography variant="caption">
-                                by username
+                                {subTitle}
                             </Typography>
                         </div>
                     </div>

@@ -71,12 +71,13 @@ const PageMyDrawings: FunctionComponent = () => {
                                       />
                                   </Paper>
                               ))
-                            : data.map(({ id, title, thumbnailUrl }) => (
+                            : data.map(({ id, title, thumbnailUrl, user }) => (
                                   <DrawingCard
                                       key={id}
-                                      id={id}
+                                      href={`/drawing-detail?id=${id}`}
                                       title={title}
-                                      thumbnailUrl={thumbnailUrl}
+                                      imageUrl={thumbnailUrl}
+                                      subTitle={`by ${user.name}`}
                                   />
                               ))}
                     </div>

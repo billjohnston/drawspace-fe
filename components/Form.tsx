@@ -22,18 +22,8 @@ const validateForm = (schema: Record<string, unknown>) => async (
 const Form: FunctionComponent<{
     schema: Record<string, unknown>
     initialValues?: Record<string, unknown>
-    onSubmit: ({
-        formData,
-    }: {
-        formData: Record<string, unknown>
-    }) => Promise<Record<string, unknown>>
-    onSuccess?: ({
-        formData,
-        result,
-    }: {
-        formData: Record<string, unknown>
-        result: Record<string, unknown>
-    }) => Promise<void>
+    onSubmit: any,
+    onSuccess?: any,
     children?: ({
         submitting,
         addPreSubmitPromise,

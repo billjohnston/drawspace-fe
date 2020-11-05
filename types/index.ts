@@ -1,3 +1,5 @@
+import DrawingCanvas from 'components/DrawingCanvas'
+
 export enum ButtonType {
     SUBMIT = 'submit',
     BUTTON = 'button',
@@ -112,4 +114,8 @@ export interface Drawing {
     user: string
     created: string
     modified: string
+}
+
+export type UserPopulatedDrawing = Omit<Drawing, 'user'> & {
+    user: User
 }
