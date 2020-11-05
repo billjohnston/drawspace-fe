@@ -12,6 +12,10 @@ I created a context API called `useDrawCanvas` to allow for dispatching events
 to the drawing canvas and setting of state that will be consumed children. Tried
 to keep all the canvas operation in on place `utilCanvasOperations`
 
+I used amplify/cognito to do a passwordless login.  I like to give users the quickest possible registration/login in flow
+
+For saving a drawing I'm uploading a thumbnail and a json file or steps s3, getting the url and posting it to the rest api. I like this flow because it cuts out the middle man and is usually faster
+
 
 ### Reasoning
 I used context to keep the business logic separate from the display components
