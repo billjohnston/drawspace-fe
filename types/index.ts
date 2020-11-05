@@ -1,5 +1,3 @@
-import DrawingCanvas from 'components/DrawingCanvas'
-
 export enum ButtonType {
     SUBMIT = 'submit',
     BUTTON = 'button',
@@ -28,12 +26,13 @@ export enum Color {
 export enum Brush {
     PENCIL,
     ERASER,
-    PAINT_BRUSH,
+    CIRCLES,
 }
 
 export interface Coords {
     x: number
     y: number
+    rand?: number
 }
 
 export interface DrawStack {

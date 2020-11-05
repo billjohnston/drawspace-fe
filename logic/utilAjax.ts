@@ -11,10 +11,10 @@ export default async function utilAJax<TAjaxResponse>({
 }: {
     url: string
     method: HttpMethods
-    body: Record<string, unknown>
-    queryParams: Record<string, unknown>
-    headers: Record<string, unknown>
-    credentials: Credentials
+    body?: Record<string, unknown>
+    queryParams?: Record<string, unknown>
+    headers?: Record<string, unknown>
+    credentials?: Credentials
 }): Promise<TAjaxResponse> {
     const queryString = queryParams
         ? `?${stringify(queryParams, { arrayFormat: 'comma', encode: false })}`

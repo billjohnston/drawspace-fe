@@ -1,7 +1,7 @@
 import { FunctionComponent, useEffect, useRef } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
 import { useDrawCanvasDispatch } from 'logic/useDrawCanvas'
+import Canvas from 'components/Canvas'
 
 const useStyles = makeStyles(({ spacing }) => ({
     canvasWrapper: {
@@ -28,8 +28,10 @@ const useStyles = makeStyles(({ spacing }) => ({
 
 const DrawingCanvas: FunctionComponent = () => {
     const classes = useStyles()
-    const canvasRef = useRef<HTMLCanvasElement>()
-    const tmpCanvasRef = useRef<HTMLCanvasElement>()
+    const canvasRef = useRef<{
+        canvas: HTMLCanvasElement
+        tmpCanvas: HTMLCanvasElement
+    }>()
 
     const {
         initCanvases,
@@ -39,32 +41,24 @@ const DrawingCanvas: FunctionComponent = () => {
     } = useDrawCanvasDispatch()
 
     useEffect(() => {
+        // wait for correct offsetWidth/height
         setTimeout(() => {
-            initCanvases(canvasRef.current, tmpCanvasRef.current)
+            initCanvases(canvasRef.current.canvas, canvasRef.current.tmpCanvas)
         })
     }, [])
 
-    const handleDisableContext = (e) => {
-        e.preventDefault()
-    }
-
     return (
         <div className={classes.canvasWrapper}>
-            <Paper className={classes.paper} elevation={3}>
-                <canvas ref={canvasRef} className={classes.canvas} />
-                <canvas
-                    className={classes.tmpCanvas}
-                    onMouseDown={startStroke}
-                    onMouseMove={drawStroke}
-                    onMouseUp={endStroke}
-                    onTouchStart={startStroke}
-                    onTouchMove={drawStroke}
-                    onTouchEnd={endStroke}
-                    onMouseLeave={endStroke}
-                    onContextMenu={handleDisableContext}
-                    ref={tmpCanvasRef}
-                />
-            </Paper>
+            <Canvas
+                ref={canvasRef}
+                onMouseDown={startStroke}
+                onMouseMove={drawStroke}
+                onMouseUp={endStroke}
+                onTouchStart={startStroke}
+                onTouchMove={drawStroke}
+                onTouchEnd={endStroke}
+                onMouseLeave={endStroke}
+            />
         </div>
     )
 }

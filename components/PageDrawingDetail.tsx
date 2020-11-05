@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography'
 import Skeleton from '@material-ui/lab/Skeleton'
 import PageError from 'components/PageError'
 import Container from 'components/Container'
+import DrawingDisplay from 'components/DrawingDisplay'
 
 const PageMyDrawings: FunctionComponent = () => {
     const router = useRouter()
@@ -31,11 +32,11 @@ const PageMyDrawings: FunctionComponent = () => {
                     <div>
                         <div>
                             {waiting ? (
-                                <Typography variant="h3">
+                                <Typography variant="h5">
                                     <Skeleton />
                                 </Typography>
                             ) : (
-                                <Typography variant="h3">
+                                <Typography variant="h5">
                                     {data.title}
                                 </Typography>
                             )}
@@ -48,7 +49,11 @@ const PageMyDrawings: FunctionComponent = () => {
                                     height={400}
                                 />
                             ) : (
-                                <img src={data.thumbnailUrl} />
+                                <DrawingDisplay
+                                    drawStepsUrl={data.drawStepsUrl}
+                                    width={data.width}
+                                    height={data.height}
+                                />
                             )}
                         </div>
                     </div>

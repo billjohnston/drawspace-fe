@@ -7,13 +7,13 @@ import {
     TouchEvent,
     useState,
 } from 'react'
-import { Coords, DrawStack, Color, Brush } from 'types'
 import {
     initCanvas,
     brushes,
     redraw,
     createThumbnail,
 } from 'logic/utilCanvasOperations'
+import { Coords, DrawStack, Color, Brush } from 'types'
 
 type MouseOrTouchEvent =
     | MouseEvent<HTMLCanvasElement>
@@ -154,7 +154,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
                 return
             }
             const coords = xyPosFromEvent(e)
-            strokeRef.current.points.push(coords)
+            strokeRef.current.points.push({ rand: Math.random(), ...coords })
             brushes[brush].drawStroke(
                 tmpContextRef.current,
                 strokeRef.current.points

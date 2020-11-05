@@ -1,5 +1,4 @@
 import { FunctionComponent } from 'react'
-import Drawer from '@material-ui/core/Drawer'
 import { makeStyles } from '@material-ui/core/styles'
 import ControlColor from 'components/ControlColor'
 import ControlLineWidth from 'components/ControlLineWidth'
@@ -16,6 +15,9 @@ const useStyles = makeStyles(({ spacing }) => ({
         padding: spacing(2),
         display: 'flex',
         flexDirection: 'column',
+        '& > div': {
+            marginTop: spacing(2),
+        },
     },
 }))
 

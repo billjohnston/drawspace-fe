@@ -2,10 +2,11 @@ import { FunctionComponent, MouseEvent } from 'react'
 import { useDrawCanvasState, useDrawCanvasDispatch } from 'logic/useDrawCanvas'
 import ToggleButton from '@material-ui/lab/ToggleButton'
 import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup'
-import BrushIcon from '@material-ui/icons/Brush'
+import ScatterPlotIcon from '@material-ui/icons/ScatterPlot'
 import CreateIcon from '@material-ui/icons/Create'
 import EraserIcon from 'components/EraserIcon'
 import { makeStyles } from '@material-ui/core/styles'
+import Typography from '@material-ui/core/Typography'
 
 import { Brush } from 'types'
 
@@ -21,7 +22,7 @@ const useStyles = makeStyles({
 const brushIconMap = {
     [Brush.PENCIL]: <CreateIcon />,
     [Brush.ERASER]: <EraserIcon />,
-    [Brush.PAINT_BRUSH]: <BrushIcon />,
+    [Brush.CIRCLES]: <ScatterPlotIcon />,
 }
 
 const brushValueArray = Array.from(
@@ -39,23 +40,27 @@ const ControlBrush: FunctionComponent = () => {
     }
 
     return (
-        <div className={classes.brushControlWrapper}>
-            <ToggleButtonGroup
-                value={activeBrush}
-                onChange={handleChange}
-                aria-label="Change brush"
-                exclusive
-            >
-                {brushValueArray.map((brushIndex) => (
-                    <ToggleButton
-                        key={brushIndex}
-                        value={brushIndex}
-                        aria-label={Brush[brushIndex]}
-                    >
-                        {brushIconMap[brushIndex]}
-                    </ToggleButton>
-                ))}
-            </ToggleButtonGroup>
+        <div>
+            <Typography variant="body2">Choose Brush</Typography>
+
+            <div className={classes.brushControlWrapper}>
+                <ToggleButtonGroup
+                    value={activeBrush}
+                    onChange={handleChange}
+                    aria-label="Change brush"
+                    exclusive
+                >
+                    {brushValueArray.map((brushIndex) => (
+                        <ToggleButton
+                            key={brushIndex}
+                            value={brushIndex}
+                            aria-label={Brush[brushIndex]}
+                        >
+                            {brushIconMap[brushIndex]}
+                        </ToggleButton>
+                    ))}
+                </ToggleButtonGroup>
+            </div>
         </div>
     )
 }

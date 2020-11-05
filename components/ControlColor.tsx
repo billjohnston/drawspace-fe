@@ -1,6 +1,7 @@
 import { FunctionComponent, MouseEventHandler } from 'react'
 import { Color } from 'types'
 import { useDrawCanvasState, useDrawCanvasDispatch } from 'logic/useDrawCanvas'
+import Typography from '@material-ui/core/Typography'
 import ColorButton from './ColorButton'
 
 const ControlColor: FunctionComponent = () => {
@@ -14,6 +15,7 @@ const ControlColor: FunctionComponent = () => {
     }
     return (
         <div>
+            <Typography variant="body2">Choose Color</Typography>
             {Object.entries(Color).map(([name, color]) => (
                 <ColorButton
                     isActive={activeColor === color}
