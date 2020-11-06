@@ -163,18 +163,18 @@ export const redraw = (
     clearCanvas(context)
     drawStack.forEach(({ brush, color, lineWidth, points }) => {
         brushes[brush].startStroke(tmpContext, lineWidth, color)
-        if (points.length > 1) {
-            const scaledPoints = scale
-                ? points.map(({ x, y, rand }) => ({
-                      x: x * scale * 2,
-                      y: y * scale * 2,
-                      scaledRand: rand * scale * 2,
-                      rand,
-                  }))
-                : points
+        const scaledPoints = scale
+            ? points.map(({ x, y, rand }) => ({
+                  x: x * scale * 2,
+                  y: y * scale * 2,
+                  scaledRand: rand * scale * 2,
+                  rand,
+              }))
+            : points
+        if (scaledPoints.length > 1) {
             brushes[brush].drawStroke(tmpContext, scaledPoints)
         }
-        brushes[brush].endStroke(context, tmpContext, points)
+        brushes[brush].endStroke(context, tmpContext, scaledPoints)
     })
 }
 

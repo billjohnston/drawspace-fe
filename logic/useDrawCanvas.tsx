@@ -161,7 +161,6 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             e.preventDefault()
             if (strokeRef.current) {
                 drawStackRef.current.push(strokeRef.current)
-                // console.log(strokeRef.current ,drawStackRef.current)
 
                 if (drawStackRef.current.length === 1) {
                     startTimeRef.current = new Date().toISOString()

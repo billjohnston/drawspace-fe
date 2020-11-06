@@ -9,6 +9,7 @@ interface Props {
     width: number
     height: number
 }
+
 const DrawingDisplay: FunctionComponent<Props> = ({
     drawStepsUrl,
     width,
@@ -20,6 +21,11 @@ const DrawingDisplay: FunctionComponent<Props> = ({
     const canvasRef = useRef<{
         canvas: HTMLCanvasElement
         tmpCanvas: HTMLCanvasElement
+    }>()
+    const canvasDataRef = useRef<{
+        ctx: CanvasRenderingContext2D
+        tmpCtx: CanvasRenderingContext2D
+        scale: number
     }>()
 
     useEffect(() => {
@@ -35,22 +41,14 @@ const DrawingDisplay: FunctionComponent<Props> = ({
                     scaledWidth,
                     scaledHeight
                 )
+                canvasDataRef.current = { ctx, tmpCtx, scale }
                 redraw(ctx, tmpCtx, drawSteps, scale)
             }
         })
     }, [drawSteps])
 
     const handleRedraw = () => {
-        const { canvas, tmpCanvas } = canvasRef.current
-        const scaledWidth = canvas.offsetWidth
-        const scale = scaledWidth / width
-        const scaledHeight = (scaledWidth * height) / width
-        const [ctx, tmpCtx] = initCanvas(
-            canvas,
-            tmpCanvas,
-            scaledWidth,
-            scaledHeight
-        )
+        const { ctx, tmpCtx, scale } = canvasDataRef.current
         slowlyRedraw(ctx, tmpCtx, drawSteps, scale)
     }
     return (

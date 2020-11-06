@@ -76,17 +76,10 @@ const FullSizeCanvas: ForwardRefRenderFunction<
     return (
         <div className={classes.canvasWrapper}>
             <Paper className={classes.paper} elevation={3}>
-                <canvas
-                    width={width || '100%'}
-                    height={height || '100%'}
-                    ref={canvasRef}
-                    className={classes.canvas}
-                />
+                <canvas ref={canvasRef} className={classes.canvas} />
                 <canvas
                     className={classes.tmpCanvas}
                     ref={tmpCanvasRef}
-                    width={width || '100%'}
-                    height={height || '100%'}
                     onContextMenu={handleDisableContext}
                     onMouseDown={onMouseDown}
                     onMouseMove={onMouseMove}
