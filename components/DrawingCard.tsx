@@ -20,8 +20,8 @@ const useStyles = makeStyles(({ spacing, palette }) => ({
         height: '100%',
     },
     image: {
-        width: '100%',
-        height: '100%',
+        maxWidth: '100%',
+        height: 'auto',
     },
     imageInfo: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -69,6 +69,8 @@ const DrawingCard: FunctionComponent<Props> = ({
                             className={classes.image}
                             src={imageUrl}
                             alt={title}
+                            width="300"
+                            height="300"
                         />
                         <div className={classes.imageInfo}>
                             <Typography variant="subtitle2">{title}</Typography>
