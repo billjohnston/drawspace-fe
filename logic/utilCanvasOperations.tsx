@@ -180,7 +180,7 @@ export const redraw = (
 
 const wait = () =>
     new Promise((resolve) => {
-        setTimeout(resolve, 1000)
+        setTimeout(resolve, 500)
     })
 export const slowlyRedraw = (
     context: CanvasRenderingContext2D,
@@ -205,7 +205,7 @@ export const slowlyRedraw = (
         }
         brushes[brush].endStroke(context, tmpContext, points)
         return wait()
-    }, Promise.resolve())
+    }, wait())
 }
 
 export const createThumbnail = (
