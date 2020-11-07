@@ -53,6 +53,7 @@ const PageMyDrawings: FunctionComponent = () => {
                                     drawStepsUrl={data.drawStepsUrl}
                                     width={data.width}
                                     height={data.height}
+                                    resolution={data.resolution}
                                 />
                             )}
                         </div>

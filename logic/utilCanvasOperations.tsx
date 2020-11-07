@@ -42,8 +42,8 @@ const copyToCanvas = (
         tmpContext.canvas,
         0,
         0,
-        canvasContext.canvas.width / 2,
-        canvasContext.canvas.height / 2
+        canvasContext.canvas.width / devicePixelRatio,
+        canvasContext.canvas.height / devicePixelRatio
     )
 }
 
@@ -91,7 +91,7 @@ const pencilBrush = {
             tmpContext.arc(
                 p1.x,
                 p1.y,
-                tmpContext.lineWidth / 2,
+                tmpContext.lineWidth / devicePixelRatio,
                 0,
                 2 * Math.PI,
                 false
@@ -154,6 +154,28 @@ export const brushes = {
     [Brush.CIRCLES]: circlesBrush,
 }
 
+const redrawStep = (
+    context: CanvasRenderingContext2D,
+    tmpContext: CanvasRenderingContext2D,
+    { brush, color, lineWidth, points }: DrawStack,
+    scale?: number
+): void => {
+    const scaledLineWidth = scale ? lineWidth * scale : lineWidth
+    brushes[brush].startStroke(tmpContext, scaledLineWidth, color)
+    const scaledPoints = scale
+        ? points.map(({ x, y, rand }) => ({
+              x: x * scale,
+              y: y * scale,
+              scaledRand: rand * scale,
+              rand,
+          }))
+        : points
+    if (points.length > 1) {
+        brushes[brush].drawStroke(tmpContext, scaledPoints)
+    }
+    brushes[brush].endStroke(context, tmpContext, scaledPoints)
+}
+
 export const redraw = (
     context: CanvasRenderingContext2D,
     tmpContext: CanvasRenderingContext2D,
@@ -161,21 +183,8 @@ export const redraw = (
     scale?: number
 ): void => {
     clearCanvas(context)
-    drawStack.forEach(({ brush, color, lineWidth, points }) => {
-        const scaledLineWidth = scale ? lineWidth * scale * 2 : lineWidth
-        brushes[brush].startStroke(tmpContext, scaledLineWidth, color)
-        const scaledPoints = scale
-            ? points.map(({ x, y, rand }) => ({
-                  x: x * scale * 2,
-                  y: y * scale * 2,
-                  scaledRand: rand * scale * 2,
-                  rand,
-              }))
-            : points
-        if (scaledPoints.length > 1) {
-            brushes[brush].drawStroke(tmpContext, scaledPoints)
-        }
-        brushes[brush].endStroke(context, tmpContext, scaledPoints)
+    drawStack.forEach((step) => {
+        redrawStep(context, tmpContext, step, scale)
     })
 }
 
@@ -190,22 +199,9 @@ export const slowlyRedraw = (
     scale?: number
 ): void => {
     clearCanvas(context)
-    drawStack.reduce(async (p, { brush, color, lineWidth, points }) => {
+    drawStack.reduce(async (p, step) => {
         await p
-        const scaledLineWidth = scale ? lineWidth * scale * 2 : lineWidth
-        brushes[brush].startStroke(tmpContext, scaledLineWidth, color)
-        const scaledPoints = scale
-            ? points.map(({ x, y, rand }) => ({
-                  x: x * scale * 2,
-                  y: y * scale * 2,
-                  scaledRand: rand * scale * 2,
-                  rand,
-              }))
-            : points
-        if (points.length > 1) {
-            brushes[brush].drawStroke(tmpContext, scaledPoints)
-        }
-        brushes[brush].endStroke(context, tmpContext, scaledPoints)
+        redrawStep(context, tmpContext, step, scale)
         return wait()
     }, wait())
 }

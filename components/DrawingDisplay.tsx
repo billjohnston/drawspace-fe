@@ -8,12 +8,14 @@ interface Props {
     drawStepsUrl: string
     width: number
     height: number
+    resolution: number
 }
 
 const DrawingDisplay: FunctionComponent<Props> = ({
     drawStepsUrl,
     width,
     height,
+    resolution,
 }) => {
     const { data: drawSteps, isLoading, isIdle } = useQueryDrawSteps(
         drawStepsUrl
@@ -33,7 +35,7 @@ const DrawingDisplay: FunctionComponent<Props> = ({
             if (canvasRef.current) {
                 const { canvas, tmpCanvas } = canvasRef.current
                 const scaledWidth = canvas.offsetWidth
-                const scale = scaledWidth / width
+                const scale = (scaledWidth / width) * resolution
                 const scaledHeight = (scaledWidth * height) / width
                 const [ctx, tmpCtx] = initCanvas(
                     canvas,

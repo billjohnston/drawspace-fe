@@ -134,7 +134,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             tmpContextRef.current = tmpCtx
         },
         startStroke: (e: MouseEvent<HTMLCanvasElement>) => {
-            e.preventDefault()
+            // e.preventDefault()
             isMouseDown.current = true
             const coords = xyPosFromEvent(e)
             strokeRef.current = {
@@ -146,7 +146,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             brushes[brush].startStroke(tmpContextRef.current, lineWidth, color)
         },
         drawStroke: (e: MouseEvent<HTMLCanvasElement>) => {
-            e.preventDefault()
+            // e.preventDefault()
             if (!isMouseDown.current) {
                 return
             }
@@ -158,7 +158,7 @@ const DrawCanvasProvider: FunctionComponent = ({ children }) => {
             )
         },
         endStroke: (e: MouseEvent<HTMLCanvasElement>) => {
-            e.preventDefault()
+            // e.preventDefault()
             if (strokeRef.current) {
                 drawStackRef.current.push(strokeRef.current)
 
