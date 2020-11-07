@@ -162,7 +162,8 @@ export const redraw = (
 ): void => {
     clearCanvas(context)
     drawStack.forEach(({ brush, color, lineWidth, points }) => {
-        brushes[brush].startStroke(tmpContext, lineWidth, color)
+        const scaledLineWidth = scale ? lineWidth * scale * 2 : lineWidth
+        brushes[brush].startStroke(tmpContext, scaledLineWidth, color)
         const scaledPoints = scale
             ? points.map(({ x, y, rand }) => ({
                   x: x * scale * 2,
@@ -191,7 +192,8 @@ export const slowlyRedraw = (
     clearCanvas(context)
     drawStack.reduce(async (p, { brush, color, lineWidth, points }) => {
         await p
-        brushes[brush].startStroke(tmpContext, lineWidth, color)
+        const scaledLineWidth = scale ? lineWidth * scale * 2 : lineWidth
+        brushes[brush].startStroke(tmpContext, scaledLineWidth, color)
         const scaledPoints = scale
             ? points.map(({ x, y, rand }) => ({
                   x: x * scale * 2,
