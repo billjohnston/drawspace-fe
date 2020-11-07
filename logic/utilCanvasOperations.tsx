@@ -192,18 +192,18 @@ export const slowlyRedraw = (
     drawStack.reduce(async (p, { brush, color, lineWidth, points }) => {
         await p
         brushes[brush].startStroke(tmpContext, lineWidth, color)
+        const scaledPoints = scale
+            ? points.map(({ x, y, rand }) => ({
+                  x: x * scale * 2,
+                  y: y * scale * 2,
+                  scaledRand: rand * scale * 2,
+                  rand,
+              }))
+            : points
         if (points.length > 1) {
-            const scaledPoints = scale
-                ? points.map(({ x, y, rand }) => ({
-                      x: x * scale * 2,
-                      y: y * scale * 2,
-                      scaledRand: rand * scale * 2,
-                      rand,
-                  }))
-                : points
             brushes[brush].drawStroke(tmpContext, scaledPoints)
         }
-        brushes[brush].endStroke(context, tmpContext, points)
+        brushes[brush].endStroke(context, tmpContext, scaledPoints)
         return wait()
     }, wait())
 }
