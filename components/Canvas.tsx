@@ -8,6 +8,7 @@ import {
 } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
+import clsx from 'clsx'
 
 const useStyles = makeStyles(({ spacing }) => ({
     canvasWrapper: {
@@ -25,10 +26,12 @@ const useStyles = makeStyles(({ spacing }) => ({
         height: '100%',
     },
     tmpCanvas: {
-        touchAction: 'none',
         position: 'absolute',
         width: '100%',
         height: '100%',
+    },
+    noTouch: {
+        touchAction: 'none',
     },
 }))
 
@@ -40,8 +43,7 @@ interface Props {
     onTouchStart?: TouchEventHandler
     onTouchMove?: TouchEventHandler
     onTouchEnd?: TouchEventHandler
-    width?: number
-    height?: number
+    allowTouch?: boolean
 }
 const FullSizeCanvas: ForwardRefRenderFunction<
     { canvas: HTMLCanvasElement; tmpCanvas: HTMLCanvasElement },
@@ -55,8 +57,7 @@ const FullSizeCanvas: ForwardRefRenderFunction<
         onTouchStart,
         onTouchMove,
         onTouchEnd,
-        width,
-        height,
+        allowTouch,
     },
     ref
 ) => {
@@ -78,7 +79,9 @@ const FullSizeCanvas: ForwardRefRenderFunction<
             <Paper className={classes.paper} elevation={3}>
                 <canvas ref={canvasRef} className={classes.canvas} />
                 <canvas
-                    className={classes.tmpCanvas}
+                    className={clsx(classes.tmpCanvas, {
+                        [classes.noTouch]: !allowTouch,
+                    })}
                     ref={tmpCanvasRef}
                     onContextMenu={handleDisableContext}
                     onMouseDown={onMouseDown}

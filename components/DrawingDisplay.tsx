@@ -55,7 +55,7 @@ const DrawingDisplay: FunctionComponent<Props> = ({
     }
     return (
         <div>
-            {!isLoading && !isIdle && <Canvas ref={canvasRef} />}
+            {!isLoading && !isIdle && <Canvas ref={canvasRef} allowTouch />}
             <Button variant="contained" onClick={handleRedraw}>
                 Redraw!
             </Button>
