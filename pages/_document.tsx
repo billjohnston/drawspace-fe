@@ -1,6 +1,6 @@
 import { Children, ReactElement } from 'react'
 import Document, { Html, Head, Main, NextScript } from 'next/document'
-import { ServerStyleSheets } from '@material-ui/styles'
+import { ServerStyleSheets } from '@material-ui/core/styles'
 import theme from 'styles/theme'
 
 export default class Doc extends Document {

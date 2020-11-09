@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'react'
-import { makeStyles } from '@material-ui/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 const useStyles = makeStyles({
     inputPadding: {
