@@ -1,0 +1,56 @@
+// For format details, see https://aka.ms/vscode-remote/devcontainer.json or this file's README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.134.0/containers/javascript-node
+{
+	"name": "Node.js",
+	"build": {
+		"dockerfile": "Dockerfile",
+		// Update 'VARIANT' to pick a Node version: 10, 12, 14
+		"args": { "VARIANT": "12" }
+	},
+
+	// Set *default* container specific settings.json values on container create.
+	"settings": { 
+        "terminal.integrated.shell.linux": "/bin/bash",
+        "editor.rulers": [
+            80
+        ],
+        "workbench.editor.enablePreview": false,
+        "breadcrumbs.enabled": true,
+        "window.zoomLevel": 1,
+        "terminal.integrated.rendererType": "dom",
+        "editor.parameterHints.enabled": false,
+        "extensions.ignoreRecommendations": false,
+        "workbench.startupEditor": "none",
+        "copyImport.rootAlias": "@",
+        "copyImport.fileExtensionImportTemplateMap": {
+            "js": "import {{BASENAME}} from '{{ROOT_ALIAS}}/{{FILE_PATH}}'",
+            "py": "from {{DOT_PATH}} import {{BASENAME}}",
+            "ts": "import {{BASENAME}} from '{{FILE_PATH}}'",
+            "tsx": "import {{BASENAME}} from '{{FILE_PATH}}'",
+        },
+        "telemetry.enableTelemetry": false,
+        "telemetry.enableCrashReporter": false,
+        "editor.renderControlCharacters": false,
+        "editor.renderWhitespace": "none",
+        "debug.javascript.usePreview": false,
+        "workbench.colorTheme": "Default Light+",
+	},
+
+	// Add the IDs of extensions you want installed when the container is created.
+	"extensions": [
+        "dbaeumer.vscode-eslint",
+        "maximus136.change-string-case",
+        "sleistner.vscode-fileutils",
+        "tomoki1207.vscode-input-sequence",
+        "billjohnston4.copy-import"
+	],
+	
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	"forwardPorts": [8686],
+
+	// Specifies a command that should be run after the container has been created.
+	"postCreateCommand": "yarn install",
+
+	// Comment out the next line to run as root instead.
+	"remoteUser": "node"
+}

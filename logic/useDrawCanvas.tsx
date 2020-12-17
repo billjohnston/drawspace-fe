@@ -15,7 +15,6 @@ import {
 } from 'logic/utilCanvasOperations'
 import { Coords, DrawStack, Color, Brush } from 'types'
 
-
 interface DrawCanvasState {
     activeColor?: Color
     activeBrush?: Brush
